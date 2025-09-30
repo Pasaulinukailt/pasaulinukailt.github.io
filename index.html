@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liquid Ass Prototype</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #3d1f0f; /* poop color */
+      color: #fff;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    /* Intro */
+    #intro {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .butt {
+      font-size: 6rem;
+      cursor: pointer;
+      animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    /* Home Screen */
+    #homeScreen {
+      display: none;
+      width: 100%;
+      max-width: 850px;
+      background: rgba(139,69,19,0.85); /* shit glass color */
+      border-radius: 24px;
+      padding: 40px;
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45), inset 0 0 40px rgba(255,255,255,0.05);
+      animation: fadeUp 1s ease forwards;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #f4e2c0;
+      text-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    .step {
+      display: none;
+    }
+
+    .step.active {
+      display: block;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #6b3d1f;
+      color: #fff;
+      font-size: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    footer {
+      font-size: 0.9rem;
+      opacity: 0.85;
+      margin-top: 40px;
+      color: #f0d9b5;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div id="intro">
+    <div class="butt">🍑💨💩</div>
+    <p>Paspausk šūdą, kad įeitum</p>
+  </div>
+
+  <div id="homeScreen">
+    <h1>Liquid Ass Užsakymas</h1>
+    <div id="steps">
+      <div class="step active" id="step1">
+        <p>Pasirink figūrą (privaloma)</p>
+        <input type="text" id="objectInput" placeholder="Įveskite objektą">
+        <button onclick="nextStep(2)">Toliau</button>
+      </div>
+
+      <div class="step" id="step2">
+        <p>Įveskite tekstą (max 8 raidės) arba praleiskite</p>
+        <input type="text" id="textInput" maxlength="8" placeholder="Tekstas">
+        <button onclick="nextStep(3)">Toliau</button>
+        <button onclick="nextStep(3)">Praleisti</button>
+      </div>
+
+      <div class="step" id="step3">
+        <p>Pasirink spalvą</p>
+        <select id="colorSelect">
+          <option>Raudona</option>
+          <option>Mėlyna</option>
+          <option>Žalia</option>
+          <option>Juoda</option>
+          <option>Balta</option>
+        </select>
+        <button onclick="nextStep(4)">Toliau</button>
+      </div>
+
+      <div class="step" id="step4">
+        <p>Pasirink datą arba praleiskite</p>
+        <input type="date" id="dateInput">
+        <button onclick="nextStep(5)">Toliau</button>
+        <button onclick="nextStep(5)">Praleisti</button>
+      </div>
+
+      <div class="step" id="step5">
+        <p>Baigta – ačiū už užsakymą!</p>
+        <p>Svetainė šiuo metu tik prototipas, neveikia pilnai.</p>
+        <p>Mūsų šūkis: <strong>Pasaulis ant tavo raktų</strong></p>
+      </div>
+    </div>
+    <footer>
+      <p>All rights reserved Pasaulinukai 2025</p>
+      <p>Svetainė padaryta Airido Naudziaus</p>
+    </footer>
+  </div>
+
+  <script>
+    const butt = document.querySelector('.butt');
+    const intro = document.getElementById('intro');
+    const homeScreen = document.getElementById('homeScreen');
+
+    butt.addEventListener('click', () => {
+      intro.style.display = 'none';
+      homeScreen.style.display = 'block';
+    });
+
+    function nextStep(step) {
+      const steps = document.querySelectorAll('.step');
+      steps.forEach(s => s.classList.remove('active'));
+      document.getElementById('step' + step).classList.add('active');
+    }
+  </script>
+</body>
+</html>
