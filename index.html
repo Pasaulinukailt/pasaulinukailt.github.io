@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pasaulinukai Lietuva</title>
   <style>
-    /* Reset */
     * {
       margin: 0;
       padding: 0;
@@ -22,6 +21,7 @@
       align-items: center;
       text-align: center;
       color: #111;
+      overflow-x: hidden;
     }
 
     .glass {
@@ -45,12 +45,19 @@
       font-size: 2.5rem;
       font-weight: 700;
       letter-spacing: -1px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       background: linear-gradient(90deg, #007aff, #00c6ff, #7b61ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 0 0 12px rgba(123, 97, 255, 0.4),
                    0 0 30px rgba(0, 198, 255, 0.2);
+    }
+
+    h2.slogan {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      font-weight: 500;
+      color: rgba(20,20,20,0.75);
     }
 
     .step {
@@ -85,6 +92,18 @@
       transform: scale(1.05);
     }
 
+    .prototype-message {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 18px;
+      padding: 15px 20px;
+      backdrop-filter: blur(15px) saturate(160%);
+      -webkit-backdrop-filter: blur(15px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.4);
+      font-size: 1rem;
+      color: rgba(0,0,0,0.85);
+    }
+
     footer {
       font-size: 0.95rem;
       opacity: 0.85;
@@ -115,6 +134,7 @@
 <body>
   <div class="glass">
     <h1>Pasaulinukai Lietuva</h1>
+    <h2 class="slogan">Pasaulis ant tavo raktų</h2>
 
     <!-- Step 1 -->
     <div class="step active" id="step1">
@@ -158,6 +178,7 @@
       <div>
         <button onclick="nextStep(1)">Pridėti daugiau figūrų</button>
         <button onclick="showDate()">Pridėti datą</button>
+        <button onclick="finish()">Baigti</button>
       </div>
       <div>
         <button onclick="prevStep(3)">Atgal</button>
@@ -172,6 +193,10 @@
         <button onclick="prevStep(4)">Atgal</button>
         <button onclick="finish()">Baigti</button>
       </div>
+    </div>
+
+    <div class="prototype-message">
+      Ši svetainė yra tik prototipas ir dar neveikia pilnai. Prašome nesugaišti savo laiko bandant pateikti užsakymą.
     </div>
 
   </div>
@@ -203,11 +228,11 @@
       location.reload();
     }
 
-    // Mobile-only distortion effect on scroll
+    // Mobile-only distortion effect on scroll (stretch)
     if (/Mobi|Android/i.test(navigator.userAgent)) {
       window.addEventListener("scroll", () => {
         const scrolled = window.scrollY;
-        document.body.style.transform = `scale(${1 + Math.min(scrolled/2000,0.05)}) skewY(${Math.min(scrolled/200,3)}deg)`;
+        document.body.style.transform = `skewY(${Math.min(scrolled/150,8)}deg)`;
       });
     }
   </script>
