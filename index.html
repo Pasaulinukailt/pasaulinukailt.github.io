@@ -5,92 +5,121 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pasaulinukai Lietuva</title>
   <style>
-    body {
+    /* Reset */
+    * {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0a0a0f, #1a1a22);
-      color: #fff;
-      overflow-x: hidden;
+      padding: 0;
+      box-sizing: border-box;
     }
-    header {
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at top left, #e0f7fa, #bbdefb, #e1bee7);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
       text-align: center;
-      padding: 2rem;
-      font-size: 2rem;
-      font-weight: bold;
-      letter-spacing: 2px;
-      color: #e0e0ff;
+      color: #111;
     }
-    .glass-panel {
-      max-width: 500px;
-      margin: 2rem auto;
-      padding: 2rem;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: 0 4px 30px rgba(0,0,0,0.5);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      text-align: center;
-      animation: fadeIn 0.8s ease;
+
+    .glass {
+      margin-top: 8vh;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 24px;
+      padding: 30px 40px;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25),
+                  inset 0 0 40px rgba(255,255,255,0.05);
+      max-width: 850px;
+      width: 90%;
+      animation: fadeUp 1.4s ease forwards;
+      opacity: 0;
+      transform: translateY(30px);
     }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+      background: linear-gradient(90deg, #007aff, #00c6ff, #7b61ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 12px rgba(123, 97, 255, 0.4),
+                   0 0 30px rgba(0, 198, 255, 0.2);
+    }
+
     .step {
       display: none;
+      flex-direction: column;
+      gap: 15px;
+      font-size: 1.1rem;
+      color: rgba(20, 20, 20, 0.85);
     }
+
     .step.active {
-      display: block;
+      display: flex;
     }
-    button {
-      background: rgba(255,255,255,0.15);
-      border: none;
-      padding: 0.7rem 1.2rem;
-      margin: 0.5rem;
+
+    input, select, button {
+      padding: 10px 14px;
       border-radius: 12px;
-      color: #fff;
+      border: none;
       font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
+      outline: none;
     }
+
+    button {
+      cursor: pointer;
+      background: linear-gradient(90deg, #007aff, #00c6ff, #7b61ff);
+      color: white;
+      font-weight: 600;
+      transition: transform 0.2s ease;
+    }
+
     button:hover {
-      background: rgba(255,255,255,0.3);
       transform: scale(1.05);
     }
-    input, select {
-      width: 80%;
-      padding: 0.5rem;
-      margin: 1rem 0;
-      border-radius: 10px;
-      border: none;
-      text-align: center;
-    }
+
     footer {
-      text-align: center;
-      padding: 2rem;
-      font-size: 0.9rem;
-      opacity: 0.8;
+      font-size: 0.95rem;
+      opacity: 0.85;
+      padding: 25px;
+      animation: fadeIn 2.2s ease forwards;
+      opacity: 0;
     }
-    footer div {
-      margin: 0.3rem 0;
+    footer p {
+      margin: 5px 0;
     }
+
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
     @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(20px);}
-      to {opacity: 1; transform: translateY(0);}
+      0% { opacity: 0; }
+      100% { opacity: 1; }
     }
-    /* Mobile-only distortion effect */
+
     @media (max-width: 768px) {
-      body.distort {
-        transform: scale(1.02) skewY(1deg);
-        transition: transform 0.3s ease;
-      }
+      h1 { font-size: 2rem; }
+      .glass { padding: 20px; }
     }
   </style>
 </head>
 <body>
-  <header>Pasaulinukai Lietuva</header>
+  <div class="glass">
+    <h1>Pasaulinukai Lietuva</h1>
 
-  <div class="glass-panel">
     <!-- Step 1 -->
     <div class="step active" id="step1">
-      <h2>Pasirinkite objektą</h2>
-      <input type="text" id="objectInput" placeholder="Įveskite objektą">
+      <label for="object">Pasirinkite objektą:</label>
+      <input type="text" id="object" placeholder="Įveskite figūrą">
       <div>
         <button onclick="nextStep(2)">Toliau</button>
       </div>
@@ -98,8 +127,8 @@
 
     <!-- Step 2 -->
     <div class="step" id="step2">
-      <h2>Įveskite tekstą (iki 8 raidžių)</h2>
-      <input type="text" id="textInput" maxlength="8" placeholder="Jūsų tekstas">
+      <label for="customText">Įveskite tekstą (max 8 raidės):</label>
+      <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
       <div>
         <button onclick="prevStep(1)">Atgal</button>
         <button onclick="nextStep(3)">Toliau</button>
@@ -109,10 +138,11 @@
 
     <!-- Step 3 -->
     <div class="step" id="step3">
-      <h2>Pasirinkite spalvą</h2>
-      <select id="colorSelect">
+      <label for="color">Pasirinkite spalvą:</label>
+      <select id="color">
         <option value="raudona">Raudona</option>
         <option value="mėlyna">Mėlyna</option>
+        <option value="žalia">Žalia</option>
         <option value="juoda">Juoda</option>
         <option value="balta">Balta</option>
       </select>
@@ -124,57 +154,62 @@
 
     <!-- Step 4 -->
     <div class="step" id="step4">
-      <h2>Pridėti daugiau</h2>
+      <p>Ką norite pridėti?</p>
       <div>
-        <button onclick="nextStep(1)">Pridėti dar figūrą</button>
+        <button onclick="nextStep(1)">Pridėti daugiau figūrų</button>
         <button onclick="showDate()">Pridėti datą</button>
       </div>
-      <div id="dateContainer" style="margin-top:1rem; display:none;">
-        <input type="date" id="dateInput">
-      </div>
-      <div style="margin-top:1rem;">
+      <div>
         <button onclick="prevStep(3)">Atgal</button>
       </div>
     </div>
+
+    <!-- Date Option -->
+    <div class="step" id="dateStep">
+      <label for="date">Pasirinkite datą:</label>
+      <input type="date" id="date">
+      <div>
+        <button onclick="prevStep(4)">Atgal</button>
+        <button onclick="finish()">Baigti</button>
+      </div>
+    </div>
+
   </div>
 
   <footer>
-    <div>Pasaulinukai Lietuva</div>
-    <div>All rights reserved Pasaulinukai 2025</div>
-    <div>Svetainė padaryta Airido Naudziaus</div>
+    <p>All rights reserved Pasaulinukai 2025</p>
+    <p>Svetainė padaryta Airido Naudziaus</p>
   </footer>
 
   <script>
     let currentStep = 1;
-
-    function showStep(step) {
-      document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
-      document.getElementById('step' + step).classList.add('active');
+    function nextStep(step) {
+      document.getElementById("step"+currentStep).classList.remove("active");
+      document.getElementById("step"+step).classList.add("active");
       currentStep = step;
     }
-
-    function nextStep(step) {
-      showStep(step);
-    }
-
     function prevStep(step) {
-      showStep(step);
+      document.getElementById("step"+currentStep).classList.remove("active");
+      document.getElementById("step"+step).classList.add("active");
+      currentStep = step;
     }
-
     function showDate() {
-      document.getElementById('dateContainer').style.display = 'block';
+      document.getElementById("step"+currentStep).classList.remove("active");
+      document.getElementById("dateStep").classList.add("active");
+      currentStep = "dateStep";
+    }
+    function finish() {
+      alert("Užsakymas baigtas! Ačiū.");
+      location.reload();
     }
 
-    // Mobile distortion effect when scrolled to bottom
-    window.addEventListener('scroll', () => {
-      if (window.innerWidth <= 768) {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 2) {
-          document.body.classList.add('distort');
-        } else {
-          document.body.classList.remove('distort');
-        }
-      }
-    });
+    // Mobile-only distortion effect on scroll
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      window.addEventListener("scroll", () => {
+        const scrolled = window.scrollY;
+        document.body.style.transform = `scale(${1 + Math.min(scrolled/2000,0.05)}) skewY(${Math.min(scrolled/200,3)}deg)`;
+      });
+    }
   </script>
 </body>
 </html>
