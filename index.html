@@ -17,15 +17,23 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       align-items: center;
-      text-align: center;
       color: #111;
       overflow-x: hidden;
     }
 
+    #wrapper {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      transition: transform 0.2s ease-out;
+    }
+
     .glass {
-      margin-top: 8vh;
+      margin-top: 6vh;
       background: rgba(255, 255, 255, 0.25);
       border-radius: 24px;
       padding: 30px 40px;
@@ -39,13 +47,15 @@
       animation: fadeUp 1.4s ease forwards;
       opacity: 0;
       transform: translateY(30px);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
     h1 {
       font-size: 2.5rem;
       font-weight: 700;
       letter-spacing: -1px;
-      margin-bottom: 10px;
       background: linear-gradient(90deg, #007aff, #00c6ff, #7b61ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -55,7 +65,6 @@
 
     h2.slogan {
       font-size: 1.2rem;
-      margin-bottom: 20px;
       font-weight: 500;
       color: rgba(20,20,20,0.75);
     }
@@ -73,11 +82,12 @@
     }
 
     input, select, button {
-      padding: 10px 14px;
+      padding: 12px 16px;
       border-radius: 12px;
       border: none;
       font-size: 1rem;
       outline: none;
+      width: 100%;
     }
 
     button {
@@ -92,8 +102,13 @@
       transform: scale(1.05);
     }
 
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .prototype-message {
-      margin-top: 20px;
       background: rgba(255,255,255,0.3);
       border-radius: 18px;
       padding: 15px 20px;
@@ -110,6 +125,7 @@
       padding: 25px;
       animation: fadeIn 2.2s ease forwards;
       opacity: 0;
+      text-align: center;
     }
     footer p {
       margin: 5px 0;
@@ -127,78 +143,80 @@
 
     @media (max-width: 768px) {
       h1 { font-size: 2rem; }
-      .glass { padding: 20px; }
+      .glass { padding: 20px; gap: 15px; }
+      .btn-row { flex-direction: column; }
     }
   </style>
 </head>
 <body>
-  <div class="glass">
-    <h1>Pasaulinukai Lietuva</h1>
-    <h2 class="slogan">Pasaulis ant tavo raktų</h2>
+  <div id="wrapper">
+    <div class="glass">
+      <h1>Pasaulinukai Lietuva</h1>
+      <h2 class="slogan">Pasaulis ant tavo raktų</h2>
 
-    <!-- Step 1 -->
-    <div class="step active" id="step1">
-      <label for="object">Pasirinkite objektą:</label>
-      <input type="text" id="object" placeholder="Įveskite figūrą">
-      <div>
-        <button onclick="nextStep(2)">Toliau</button>
+      <!-- Step 1 -->
+      <div class="step active" id="step1">
+        <label for="object">Pasirinkite objektą:</label>
+        <input type="text" id="object" placeholder="Įveskite figūrą">
+        <div class="btn-row">
+          <button onclick="validateAndNext(2)">Toliau</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step" id="step2">
+        <label for="customText">Įveskite tekstą (max 8 raidės):</label>
+        <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
+        <div class="btn-row">
+          <button onclick="prevStep(1)">Atgal</button>
+          <button onclick="nextStep(3)">Toliau</button>
+          <button onclick="nextStep(3)">Praleisti</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step" id="step3">
+        <label for="color">Pasirinkite spalvą:</label>
+        <select id="color">
+          <option value="raudona">Raudona</option>
+          <option value="mėlyna">Mėlyna</option>
+          <option value="žalia">Žalia</option>
+          <option value="juoda">Juoda</option>
+          <option value="balta">Balta</option>
+        </select>
+        <div class="btn-row">
+          <button onclick="prevStep(2)">Atgal</button>
+          <button onclick="nextStep(4)">Toliau</button>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step" id="step4">
+        <p>Ką norite pridėti?</p>
+        <div class="btn-row">
+          <button onclick="nextStep(1)">Pridėti daugiau figūrų</button>
+          <button onclick="showDate()">Pridėti datą</button>
+          <button onclick="finish()">Baigti</button>
+        </div>
+        <div class="btn-row">
+          <button onclick="prevStep(3)">Atgal</button>
+        </div>
+      </div>
+
+      <!-- Date Option -->
+      <div class="step" id="dateStep">
+        <label for="date">Pasirinkite datą:</label>
+        <input type="date" id="date">
+        <div class="btn-row">
+          <button onclick="prevStep(4)">Atgal</button>
+          <button onclick="finish()">Baigti</button>
+        </div>
+      </div>
+
+      <div class="prototype-message">
+        Ši svetainė yra tik prototipas ir dar neveikia pilnai. Prašome nesugaišti savo laiko bandant pateikti užsakymą.
       </div>
     </div>
-
-    <!-- Step 2 -->
-    <div class="step" id="step2">
-      <label for="customText">Įveskite tekstą (max 8 raidės):</label>
-      <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
-      <div>
-        <button onclick="prevStep(1)">Atgal</button>
-        <button onclick="nextStep(3)">Toliau</button>
-        <button onclick="nextStep(3)">Praleisti</button>
-      </div>
-    </div>
-
-    <!-- Step 3 -->
-    <div class="step" id="step3">
-      <label for="color">Pasirinkite spalvą:</label>
-      <select id="color">
-        <option value="raudona">Raudona</option>
-        <option value="mėlyna">Mėlyna</option>
-        <option value="žalia">Žalia</option>
-        <option value="juoda">Juoda</option>
-        <option value="balta">Balta</option>
-      </select>
-      <div>
-        <button onclick="prevStep(2)">Atgal</button>
-        <button onclick="nextStep(4)">Toliau</button>
-      </div>
-    </div>
-
-    <!-- Step 4 -->
-    <div class="step" id="step4">
-      <p>Ką norite pridėti?</p>
-      <div>
-        <button onclick="nextStep(1)">Pridėti daugiau figūrų</button>
-        <button onclick="showDate()">Pridėti datą</button>
-        <button onclick="finish()">Baigti</button>
-      </div>
-      <div>
-        <button onclick="prevStep(3)">Atgal</button>
-      </div>
-    </div>
-
-    <!-- Date Option -->
-    <div class="step" id="dateStep">
-      <label for="date">Pasirinkite datą:</label>
-      <input type="date" id="date">
-      <div>
-        <button onclick="prevStep(4)">Atgal</button>
-        <button onclick="finish()">Baigti</button>
-      </div>
-    </div>
-
-    <div class="prototype-message">
-      Ši svetainė yra tik prototipas ir dar neveikia pilnai. Prašome nesugaišti savo laiko bandant pateikti užsakymą.
-    </div>
-
   </div>
 
   <footer>
@@ -228,11 +246,22 @@
       location.reload();
     }
 
+    // Validation for first step
+    function validateAndNext(step) {
+      const obj = document.getElementById("object").value.trim();
+      if (!obj) {
+        alert("Prašome įvesti figūrą prieš tęsiant.");
+        return;
+      }
+      nextStep(step);
+    }
+
     // Mobile-only distortion effect on scroll (stretch)
     if (/Mobi|Android/i.test(navigator.userAgent)) {
+      const wrapper = document.getElementById("wrapper");
       window.addEventListener("scroll", () => {
         const scrolled = window.scrollY;
-        document.body.style.transform = `skewY(${Math.min(scrolled/150,8)}deg)`;
+        wrapper.style.transform = `skewY(${Math.min(scrolled/150,8)}deg)`;
       });
     }
   </script>
