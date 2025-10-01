@@ -1,270 +1,250 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pasaulinukai Lietuva — Prototype</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasaulinukai Lietuva</title>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --glass-bg: rgba(255,255,255,0.26);
-      --glass-border: rgba(255,255,255,0.35);
-      --accent-1:#007aff;
-      --accent-2:#00c6ff;
-      --accent-3:#7b61ff;
+    * {margin:0;padding:0;box-sizing:border-box;}
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: radial-gradient(circle at top center, #a8e6cf, #dcedc1, #bbdefb);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      color: #111;
     }
-
-    /* Pastel green-dominant fading into pastel blue */
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      background: linear-gradient(180deg, #c8fbe0 0%, #b4f8c8 36%, #a8d8f0 100%);
-      min-height:100vh; color:#111; -webkit-font-smoothing:antialiased;
-      display:flex; flex-direction:column; align-items:center; overflow-x:hidden;
+    .glass {
+      margin-top: 4vh;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 24px;
+      padding: 30px 40px;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.25),
+                  inset 0 0 40px rgba(255,255,255,0.05);
+      width: 90%;
+      max-width: 850px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      text-align: center;
     }
-
-    /* Wrapper (will stretch/deform on mobile overscroll) */
-    #wrapper{width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;transition:transform 240ms ease-out}
-
-    .glass{
-      width:92%; max-width:920px; margin-top:5vh; padding:28px 34px; border-radius:18px;
-      background:var(--glass-bg); border:1px solid var(--glass-border);
-      backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%);
-      box-shadow:0 18px 50px rgba(0,0,0,0.12), inset 0 0 30px rgba(255,255,255,0.04);
-      display:flex; flex-direction:column; gap:16px; text-align:left;
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #007aff, #00c6ff, #7b61ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-
-    header{display:flex;flex-direction:column;align-items:center;gap:6px}
-    h1{font-size:2.25rem;margin:0;background:linear-gradient(90deg,var(--accent-1),var(--accent-2),var(--accent-3));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .slogan{color:rgba(20,20,20,0.75);font-weight:500;text-align:center}
-
-    .top-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-    .btn-link{display:inline-block;padding:10px 18px;border-radius:12px;background:var(--accent-1);color:#fff;text-decoration:none;font-weight:600}
-
-    .step{display:none;flex-direction:column;gap:12px}
-    .step.active{display:flex}
-
-    label{font-size:0.98rem;color:rgba(10,10,10,0.9)}
-    input[type=text],input[type=email],input[type=tel],input[type=date],select,textarea{
-      width:100%;padding:12px;border-radius:12px;border:none;font-size:1rem;background:rgba(255,255,255,0.9)
+    h2.slogan {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: rgba(20,20,20,0.75);
     }
-
-    .btn-row{display:flex;gap:10px;flex-wrap:wrap}
-    button{padding:10px 16px;border-radius:12px;border:none;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#fff;font-weight:600;cursor:pointer}
-    button.secondary{background:transparent;border:1px solid rgba(0,0,0,0.08);color:#111}
-
-    .prototype-message{margin-top:6px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.3);font-size:0.98rem;color:rgba(0,0,0,0.85)}
-
-    .summary-box{background:rgba(255,255,255,0.12);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06)}
-
-    footer{width:92%;max-width:920px;padding:18px;text-align:center;color:rgba(0,0,0,0.7);transition:transform 240ms ease-out;margin-top:20px}
-
-    @media (max-width:720px){
-      h1{font-size:1.6rem}
-      .glass{padding:18px}
-      button{width:100%}
-      .btn-row{flex-direction:column}
+    .btn-link {
+      display:inline-block;
+      margin-top:10px;
+      padding:10px 20px;
+      background:#007aff;
+      color:#fff;
+      border-radius:12px;
+      text-decoration:none;
+      font-weight:600;
     }
+    .step {display:none;flex-direction:column;gap:15px;}
+    .step.active {display:flex;}
+    input, select, button {
+      padding:12px 16px;
+      border-radius:12px;
+      border:none;
+      font-size:1rem;
+      outline:none;
+      width:100%;
+    }
+    button {
+      cursor:pointer;
+      background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
+      color:white;
+      font-weight:600;
+      transition:transform 0.2s ease;
+    }
+    button:hover {transform:scale(1.05);}
+    .btn-row {display:flex;gap:10px;flex-wrap:wrap;}
+    .prototype-message {
+      background:rgba(255,255,255,0.3);
+      border-radius:18px;
+      padding:15px 20px;
+      backdrop-filter:blur(15px) saturate(160%);
+      -webkit-backdrop-filter:blur(15px) saturate(160%);
+      border:1px solid rgba(255,255,255,0.4);
+      font-size:1rem;
+      color:rgba(0,0,0,0.85);
+    }
+    footer {font-size:0.95rem;opacity:0.85;padding:25px;text-align:center;}
+    footer p {margin:5px 0;}
   </style>
 </head>
 <body>
-  <div id="wrapper">
-    <main class="glass" role="main" aria-labelledby="title">
-      <header>
-        <h1 id="title">Pasaulinukai Lietuva</h1>
-        <div class="slogan">Pasaulis ant tavo raktų</div>
-      </header>
+  <div class="glass">
+    <h1>Pasaulinukai Lietuva</h1>
+    <h2 class="slogan">Pasaulis ant tavo raktų</h2>
 
-      <div class="top-actions" aria-hidden="false">
-        <a class="btn-link" href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" target="_blank" rel="noopener">Užpildyti per Google Forms</a>
+    <!-- Google Forms option -->
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" 
+       target="_blank" class="btn-link">
+       Užpildyti per Google Forms
+    </a>
+    <p>Arba tęskite užsakymą svetainėje:</p>
+
+    <!-- Step 1 -->
+    <div class="step active" id="step1">
+      <label for="object">Pasirinkite objektą:</label>
+      <input type="text" id="object" placeholder="Įveskite figūrą">
+      <div class="btn-row">
+        <button onclick="validateAndNext(2)">Toliau</button>
       </div>
+    </div>
 
-      <p style="text-align:center;margin-top:6px">Arba tęskite užsakymą tiesiog čia puslapyje:</p>
+    <!-- Step 2 -->
+    <div class="step" id="step2">
+      <label for="customText">Įveskite tekstą (max 8 raidės):</label>
+      <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
+      <div class="btn-row">
+        <button onclick="prevStep(1)">Atgal</button>
+        <button onclick="nextStep(3)">Toliau</button>
+        <button onclick="nextStep(3)">Praleisti</button>
+      </div>
+    </div>
 
-      <!-- Step 1 -->
-      <section id="step1" class="step active" aria-label="žingsnis 1">
-        <label for="object">1) Pasirinkite objektą (privaloma):</label>
-        <input id="object" type="text" placeholder="Įveskite figūrą" aria-required="true">
-        <div class="btn-row"><button onclick="goTo('step2')">Toliau</button></div>
-      </section>
+    <!-- Step 3 -->
+    <div class="step" id="step3">
+      <label for="color">Pasirinkite spalvą:</label>
+      <select id="color">
+        <option value="pilka">Pilka (numatyta)</option>
+        <option value="raudona">Raudona</option>
+        <option value="mėlyna">Mėlyna</option>
+        <option value="žalia">Žalia</option>
+        <option value="juoda">Juoda</option>
+        <option value="balta">Balta</option>
+        <option value="artimiausia">Artimiausia pasirinktam objektui</option>
+      </select>
+      <div class="btn-row">
+        <button onclick="prevStep(2)">Atgal</button>
+        <button onclick="nextStep(4)">Toliau</button>
+      </div>
+    </div>
 
-      <!-- Step 2 -->
-      <section id="step2" class="step" aria-label="žingsnis 2">
-        <label for="customText">2) Tekstas (max 8 raidės) arba praleiskite:</label>
-        <input id="customText" type="text" maxlength="8" placeholder="Tekstas">
-        <div class="btn-row"><button class="secondary" onclick="goTo('step1')">Atgal</button><button onclick="goTo('step3')">Toliau</button><button class="secondary" onclick="skipText()">Praleisti</button></div>
-      </section>
+    <!-- Step 4 -->
+    <div class="step" id="step4">
+      <p>Ką norite pridėti?</p>
+      <div class="btn-row">
+        <button onclick="nextStep(1)">Pridėti daugiau figūrų</button>
+        <button onclick="showDate()">Pridėti datą</button>
+        <button onclick="showSummary()">Baigti</button>
+      </div>
+      <div class="btn-row">
+        <button onclick="prevStep(3)">Atgal</button>
+      </div>
+    </div>
 
-      <!-- Step 3 -->
-      <section id="step3" class="step" aria-label="žingsnis 3">
-        <label for="color">3) Pasirinkite spalvą:</label>
-        <select id="color" aria-label="spalva">
-          <option value="pilka" selected>Pilka (numatytoji)</option>
-          <option value="raudona">Raudona</option>
-          <option value="melyna">Mėlyna</option>
-          <option value="zalia">Žalia</option>
-          <option value="juoda">Juoda</option>
-          <option value="balta">Balta</option>
-          <option value="artimiausia">Artimiausia pasirinktam objektui</option>
+    <!-- Date Option -->
+    <div class="step" id="dateStep">
+      <label for="date">Pasirinkite datą:</label>
+      <input type="date" id="date">
+      <div class="btn-row">
+        <button onclick="prevStep(4)">Atgal</button>
+        <button onclick="showSummary()">Baigti</button>
+      </div>
+    </div>
+
+    <!-- Summary + Formspree -->
+    <div class="step" id="summaryStep">
+      <h3>Jūsų užsakymo santrauka</h3>
+      <p id="summaryText"></p>
+      <form action="https://formspree.io/f/mgvnyvbv" method="POST">
+        <input type="hidden" name="object" id="formObject">
+        <input type="hidden" name="customText" id="formText">
+        <input type="hidden" name="color" id="formColor">
+        <input type="hidden" name="date" id="formDate">
+
+        <label>Pilnas vardas:</label>
+        <input type="text" name="fullname" required>
+        <label>El. paštas:</label>
+        <input type="email" name="email" required>
+        <label>Telefono numeris:</label>
+        <input type="tel" name="phone" required>
+        <label>Pageidaujamas kontaktas:</label>
+        <select name="contactMethod" required>
+          <option value="email">El. paštas</option>
+          <option value="sms">SMS</option>
         </select>
-        <div class="btn-row"><button class="secondary" onclick="goTo('step2')">Atgal</button><button onclick="goTo('step4')">Toliau</button></div>
-      </section>
+        <button type="submit">Pateikti užsakymą</button>
+      </form>
+    </div>
 
-      <!-- Step 4 -->
-      <section id="step4" class="step" aria-label="žingsnis 4">
-        <div><strong>4) Ką norite pridėti?</strong></div>
-        <div class="btn-row">
-          <button onclick="addMore()">Pridėti daugiau figūrų</button>
-          <button onclick="goTo('dateStep')">Pridėti datą</button>
-          <button onclick="showSummary()">Baigti</button>
-        </div>
-        <div class="btn-row"><button class="secondary" onclick="goTo('step3')">Atgal</button></div>
-      </section>
-
-      <!-- Date step -->
-      <section id="dateStep" class="step" aria-label="data">
-        <label for="date">Pasirinkite datą (neprivaloma):</label>
-        <input id="date" type="date">
-        <div class="btn-row"><button class="secondary" onclick="goTo('step4')">Atgal</button><button onclick="showSummary()">Baigti</button></div>
-      </section>
-
-      <!-- Summary + Formspree -->
-      <section id="summaryStep" class="step" aria-label="santrauka">
-        <h3>Jūsų užsakymo santrauka</h3>
-        <div id="summaryText" class="summary-box" aria-live="polite"></div>
-
-        <form id="orderForm" action="https://formspree.io/f/mgvnyvbv" method="POST">
-          <!-- hidden fields with order data -->
-          <input type="hidden" name="object" id="formObject">
-          <input type="hidden" name="customText" id="formText">
-          <input type="hidden" name="color" id="formColor">
-          <input type="hidden" name="date" id="formDate">
-
-          <label for="fullname">Pilnas vardas:</label>
-          <input id="fullname" name="fullname" type="text" required>
-
-          <label for="email">El. paštas:</label>
-          <input id="email" name="email" type="email" required>
-
-          <label for="phone">Telefono numeris:</label>
-          <input id="phone" name="phone" type="tel" required>
-
-          <label for="contactMethod">Pageidaujamas kontaktavimo būdas:</label>
-          <select id="contactMethod" name="contactMethod" required>
-            <option value="email">El. paštas</option>
-            <option value="sms">SMS</option>
-          </select>
-
-          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-            <button type="submit">Pateikti užsakymą</button>
-            <a class="btn-link" href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" target="_blank" rel="noopener">Naudoti Google Forms</a>
-          </div>
-        </form>
-      </section>
-
-      <div class="prototype-message">Ši svetainė yra tik prototipas ir dar neveikia pilnai. Prašome nesugaišti savo laiko bandant pateikti užsakymą.</div>
-    </main>
+    <div class="prototype-message">
+      Ši svetainė yra tik prototipas ir dar neveikia pilnai. Prašome nesugaišti savo laiko bandant pateikti užsakymą.
+    </div>
   </div>
 
-  <footer id="footer"><p>All rights reserved Pasaulinukai 2025</p><p>Svetainė padaryta Airido Naudziaus</p></footer>
+  <footer>
+    <p>All rights reserved Pasaulinukai 2025</p>
+    <p>Svetainė padaryta Airido Naudziaus</p>
+  </footer>
 
   <script>
-    // order state
-    const order = {object:'', text:'', color:'pilka', date:''};
+    let currentStep = 1;
+    let order = {object:"", text:"", color:"", date:""};
 
-    // step helpers
-    function hideAll(){ document.querySelectorAll('.step').forEach(s=>s.classList.remove('active')) }
-    function goTo(id){
-      // ensure object is filled before leaving step1
-      if(id !== 'step1' && (!document.getElementById('object') || !document.getElementById('object').value.trim())){
-        alert('Prašome įvesti figūrą prieš tęsiant.');
-        hideAll(); document.getElementById('step1').classList.add('active'); return;
-      }
-      hideAll(); const el = document.getElementById(id); if(el) el.classList.add('active');
-      // small focus management
-      setTimeout(()=>{ const first = document.querySelector('#'+id+' input, #'+id+' select'); if(first) first.focus(); },120);
+    function nextStep(step) {
+      document.getElementById("step"+currentStep)?.classList.remove("active");
+      document.getElementById("dateStep").classList.remove("active");
+      document.getElementById("step"+step)?.classList.add("active");
+      currentStep = step;
     }
+    function prevStep(step) {
+      document.getElementById("step"+currentStep).classList.remove("active");
+      document.getElementById("step"+step).classList.add("active");
+      currentStep = step;
+    }
+    function showDate() {
+      document.getElementById("step"+currentStep).classList.remove("active");
+      document.getElementById("dateStep").classList.add("active");
+      currentStep = "dateStep";
+    }
+    function validateAndNext(step) {
+      const obj = document.getElementById("object").value.trim();
+      if (!obj) { alert("Prašome įvesti figūrą prieš tęsiant."); return; }
+      order.object = obj;
+      nextStep(step);
+    }
+    function showSummary() {
+      order.text = document.getElementById("customText").value.trim();
+      order.color = document.getElementById("color").value;
+      order.date = document.getElementById("date").value;
 
-    function skipText(){ document.getElementById('customText').value=''; goTo('step3') }
-    function addMore(){ alert('Pridedamas naujas objektas — grįžtate į 1 žingsnį.'); document.getElementById('customText').value=''; goTo('step1'); }
-
-    function showSummary(){
-      order.object = document.getElementById('object').value.trim();
-      order.text = document.getElementById('customText').value.trim();
-      order.color = document.getElementById('color').value;
-      order.date = document.getElementById('date').value || '';
-
-      const summaryHtml = `
-        <strong>Objektas:</strong> ${escapeHtml(order.object)}<br>
-        <strong>Tekstas:</strong> ${order.text ? escapeHtml(order.text) : '—'}<br>
-        <strong>Spalva:</strong> ${escapeHtml(order.color)}<br>
-        <strong>Data:</strong> ${order.date || '—'}
+      const summary = `
+        Objektas: ${order.object}<br>
+        Tekstas: ${order.text || "—"}<br>
+        Spalva: ${order.color}<br>
+        Data: ${order.date || "—"}
       `;
-      document.getElementById('summaryText').innerHTML = summaryHtml;
-      document.getElementById('formObject').value = order.object;
-      document.getElementById('formText').value = order.text;
-      document.getElementById('formColor').value = order.color;
-      document.getElementById('formDate').value = order.date;
+      document.getElementById("summaryText").innerHTML = summary;
 
-      hideAll(); document.getElementById('summaryStep').classList.add('active');
-      setTimeout(()=>{ document.getElementById('summaryStep').scrollIntoView({behavior:'smooth'}) },80);
+      // Fill hidden inputs for Formspree
+      document.getElementById("formObject").value = order.object;
+      document.getElementById("formText").value = order.text;
+      document.getElementById("formColor").value = order.color;
+      document.getElementById("formDate").value = order.date;
+
+      document.getElementById("step"+currentStep)?.classList.remove("active");
+      document.getElementById("summaryStep").classList.add("active");
+      currentStep = "summaryStep";
     }
-
-    function escapeHtml(str){ return String(str).replace(/[&<>\"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":\"&#39;\"})[m])}
-
-    // Desktop: no deformation. Mobile/touch devices only.
-    (function(){
-      const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-      if(!isTouch) return; // exit: do not attach deformation on mouse-only devices
-
-      const wrapper = document.getElementById('wrapper');
-      const footer = document.getElementById('footer');
-      let startY = 0, touching=false;
-
-      window.addEventListener('touchstart', e=>{
-        startY = e.touches[0].clientY;
-        touching = true;
-        wrapper.style.transition = 'transform 0ms';
-        footer.style.transition = 'transform 0ms';
-      }, {passive:true});
-
-      window.addEventListener('touchmove', e=>{
-        if(!touching) return;
-        const nowY = e.touches[0].clientY;
-        const delta = nowY - startY;
-        const atTop = window.scrollY <= 0 && delta > 0;
-        const atBottom = (window.innerHeight + window.scrollY >= document.body.offsetHeight - 1) && delta < 0;
-
-        if(atTop || atBottom){
-          // amount controls how much it stretches: tuned for subtle but visible effect
-          const amount = Math.min(Math.abs(delta) / 450, 0.20); // cap
-          // scaleY >1 for pull-down, slightly <1 for pull-up
-          const scaleY = atTop ? 1 + amount : 1 - (amount * 0.55);
-          const skewDeg = (delta / 80); // small skew
-          wrapper.style.transform = `scaleY(${scaleY}) skewY(${skewDeg}deg)`;
-          footer.style.transform = `scaleY(${scaleY}) skewY(${skewDeg}deg)`;
-        }
-      }, {passive:true});
-
-      window.addEventListener('touchend', ()=>{
-        touching = false;
-        wrapper.style.transition = 'transform 420ms cubic-bezier(.2,.8,.2,1)';
-        footer.style.transition = 'transform 420ms cubic-bezier(.2,.8,.2,1)';
-        wrapper.style.transform = 'none';
-        footer.style.transform = 'none';
-      });
-    })();
-
-    // allow Enter to advance inside active step
-    document.addEventListener('keydown', e=>{
-      if(e.key !== 'Enter') return;
-      const active = document.querySelector('.step.active');
-      if(!active) return;
-      // find the next step element id
-      const steps = Array.from(document.querySelectorAll('.step'));
-      const idx = steps.indexOf(active);
-      if(idx >= 0 && idx < steps.length - 1) goTo(steps[idx+1].id);
-    });
-
   </script>
 </body>
 </html>
