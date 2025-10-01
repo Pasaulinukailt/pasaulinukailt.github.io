@@ -5,199 +5,125 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pasaulinukai Lietuva</title>
   <style>
-    * {margin:0;padding:0;box-sizing:border-box;}
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(circle at top center, #a8e6cf, #dcedc1, #bbdefb);
+      margin: 0;
       min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #a7f3d0, #d1fae5, #bfdbfe);
       display: flex;
       flex-direction: column;
       align-items: center;
-      overflow-x: hidden;
-      color: #111;
+      justify-content: start;
+      padding: 20px;
     }
+
     .glass {
-      margin-top: 4vh;
-      background: rgba(255, 255, 255, 0.25);
-      border-radius: 24px;
-      padding: 30px 40px;
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1px solid rgba(255,255,255,0.3);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.25),
-                  inset 0 0 40px rgba(255,255,255,0.05);
-      width: 90%;
-      max-width: 850px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      width: 100%;
+      max-width: 600px;
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      padding: 30px;
       text-align: center;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: transform 0.8s ease, opacity 0.8s ease;
     }
+
+    .glass.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
     h1 {
       font-size: 2.5rem;
-      font-weight: 700;
-      background: linear-gradient(90deg, #007aff, #00c6ff, #7b61ff);
+      font-weight: bold;
+      background: linear-gradient(to right, #3b82f6, #06b6d4, #8b5cf6);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: stretch 1.2s ease-out both; /* stretch effect */
+      margin: 0;
     }
-    @keyframes stretch {
-      0% {transform: scaleX(1) scaleY(1);}
-      30% {transform: scaleX(1.3) scaleY(0.8);}
-      60% {transform: scaleX(0.9) scaleY(1.1);}
-      100% {transform: scaleX(1) scaleY(1);}
-    }
-    h2.slogan {
+
+    h2 {
       font-size: 1.2rem;
-      font-weight: 500;
-      color: rgba(20,20,20,0.75);
+      color: rgba(0,0,0,0.7);
+      margin-top: 10px;
     }
-    .btn-link {
-      display:inline-block;
-      margin-top:10px;
-      padding:10px 20px;
-      background:#007aff;
-      color:#fff;
-      border-radius:12px;
-      text-decoration:none;
-      font-weight:600;
+
+    .btn {
+      display: inline-block;
+      margin: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(to right, #3b82f6, #06b6d4, #8b5cf6);
+      color: white;
+      transition: transform 0.2s ease;
     }
-    .step {display:none;flex-direction:column;gap:15px;}
-    .step.active {display:flex;}
-    input, select, button {
-      padding:12px 16px;
-      border-radius:12px;
-      border:none;
-      font-size:1rem;
-      outline:none;
-      width:100%;
+
+    .btn:hover {
+      transform: scale(1.05);
     }
-    button {
-      cursor:pointer;
-      background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
-      color:white;
-      font-weight:600;
-      transition:transform 0.2s ease;
+
+    input, select {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      width: 100%;
     }
-    /* Stretch effect on hover */
-    button:hover {
-      animation: stretch 0.6s ease both;
-    }
-    .btn-row {display:flex;gap:10px;flex-wrap:wrap;}
+
     .prototype-message {
-      background:rgba(255,255,255,0.3);
-      border-radius:18px;
-      padding:15px 20px;
-      backdrop-filter:blur(15px) saturate(160%);
-      -webkit-backdrop-filter:blur(15px) saturate(160%);
-      border:1px solid rgba(255,255,255,0.4);
-      font-size:1rem;
-      color:rgba(0,0,0,0.85);
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255,255,255,0.5);
+      padding: 10px;
+      border-radius: 12px;
+      margin-top: 15px;
+      font-size: 0.9rem;
+      color: rgba(0,0,0,0.8);
     }
-    footer {font-size:0.95rem;opacity:0.85;padding:25px;text-align:center;}
-    footer p {margin:5px 0;}
+
+    footer {
+      margin-top: 30px;
+      font-size: 0.8rem;
+      opacity: 0.8;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="glass">
+  <div class="glass" id="glass">
     <h1>Pasaulinukai Lietuva</h1>
-    <h2 class="slogan">Pasaulis ant tavo raktų</h2>
+    <h2>Pasaulis ant tavo raktų</h2>
 
-    <!-- Google Forms option -->
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" 
-       target="_blank" class="btn-link">
-       Užpildyti per Google Forms
-    </a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog"
+       target="_blank" class="btn">Užpildyti per Google Forms</a>
     <p>Arba tęskite užsakymą svetainėje:</p>
 
-    <!-- Step 1 -->
-    <div class="step active" id="step1">
-      <label for="object">Pasirinkite objektą:</label>
-      <input type="text" id="object" placeholder="Įveskite figūrą">
-      <div class="btn-row">
-        <button onclick="validateAndNext(2)">Toliau</button>
-      </div>
-    </div>
+    <label for="object">Pasirinkite objektą:</label>
+    <input type="text" id="object" placeholder="Įveskite figūrą">
 
-    <!-- Step 2 -->
-    <div class="step" id="step2">
-      <label for="customText">Įveskite tekstą (max 8 raidės):</label>
-      <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
-      <div class="btn-row">
-        <button onclick="prevStep(1)">Atgal</button>
-        <button onclick="nextStep(3)">Toliau</button>
-        <button onclick="nextStep(3)">Praleisti</button>
-      </div>
-    </div>
+    <label for="customText">Įveskite tekstą (max 8 raidės):</label>
+    <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
 
-    <!-- Step 3 -->
-    <div class="step" id="step3">
-      <label for="color">Pasirinkite spalvą:</label>
-      <select id="color">
-        <option value="pilka">Pilka (numatyta)</option>
-        <option value="raudona">Raudona</option>
-        <option value="mėlyna">Mėlyna</option>
-        <option value="žalia">Žalia</option>
-        <option value="juoda">Juoda</option>
-        <option value="balta">Balta</option>
-        <option value="artimiausia">Artimiausia pasirinktam objektui</option>
-      </select>
-      <div class="btn-row">
-        <button onclick="prevStep(2)">Atgal</button>
-        <button onclick="nextStep(4)">Toliau</button>
-      </div>
-    </div>
-
-    <!-- Step 4 -->
-    <div class="step" id="step4">
-      <p>Ką norite pridėti?</p>
-      <div class="btn-row">
-        <button onclick="nextStep(1)">Pridėti daugiau figūrų</button>
-        <button onclick="showDate()">Pridėti datą</button>
-        <button onclick="showSummary()">Baigti</button>
-      </div>
-      <div class="btn-row">
-        <button onclick="prevStep(3)">Atgal</button>
-      </div>
-    </div>
-
-    <!-- Date Option -->
-    <div class="step" id="dateStep">
-      <label for="date">Pasirinkite datą:</label>
-      <input type="date" id="date">
-      <div class="btn-row">
-        <button onclick="prevStep(4)">Atgal</button>
-        <button onclick="showSummary()">Baigti</button>
-      </div>
-    </div>
-
-    <!-- Summary + Formspree -->
-    <div class="step" id="summaryStep">
-      <h3>Jūsų užsakymo santrauka</h3>
-      <p id="summaryText"></p>
-      <form action="https://formspree.io/f/mgvnyvbv" method="POST">
-        <input type="hidden" name="object" id="formObject">
-        <input type="hidden" name="customText" id="formText">
-        <input type="hidden" name="color" id="formColor">
-        <input type="hidden" name="date" id="formDate">
-
-        <label>Pilnas vardas:</label>
-        <input type="text" name="fullname" required>
-        <label>El. paštas:</label>
-        <input type="email" name="email" required>
-        <label>Telefono numeris:</label>
-        <input type="tel" name="phone" required>
-        <label>Pageidaujamas kontaktas:</label>
-        <select name="contactMethod" required>
-          <option value="email">El. paštas</option>
-          <option value="sms">SMS</option>
-        </select>
-        <button type="submit">Pateikti užsakymą</button>
-      </form>
-    </div>
+    <label for="color">Pasirinkite spalvą:</label>
+    <select id="color">
+      <option value="pilka">Pilka (numatyta)</option>
+      <option value="raudona">Raudona</option>
+      <option value="mėlyna">Mėlyna</option>
+      <option value="žalia">Žalia</option>
+      <option value="juoda">Juoda</option>
+      <option value="balta">Balta</option>
+      <option value="artimiausia">Artimiausia pasirinktam objektui</option>
+    </select>
 
     <div class="prototype-message">
-      Ši svetainė yra tik prototipas ir dar neveikia pilnai. Prašome nesugaišti savo laiko bandant pateikti užsakymą.
+      Ši svetainė yra tik prototipas ir dar neveikia pilnai.
     </div>
   </div>
 
@@ -207,54 +133,75 @@
   </footer>
 
   <script>
-    let currentStep = 1;
-    let order = {object:"", text:"", color:"", date:""};
+    // Slide up animation on load
+    window.addEventListener("load", () => {
+      document.getElementById("glass").classList.add("visible");
+    });
 
-    function nextStep(step) {
-      document.getElementById("step"+currentStep)?.classList.remove("active");
-      document.getElementById("dateStep").classList.remove("active");
-      document.getElementById("step"+step)?.classList.add("active");
-      currentStep = step;
-    }
-    function prevStep(step) {
-      document.getElementById("step"+currentStep).classList.remove("active");
-      document.getElementById("step"+step).classList.add("active");
-      currentStep = step;
-    }
-    function showDate() {
-      document.getElementById("step"+currentStep).classList.remove("active");
-      document.getElementById("dateStep").classList.add("active");
-      currentStep = "dateStep";
-    }
-    function validateAndNext(step) {
-      const obj = document.getElementById("object").value.trim();
-      if (!obj) { alert("Prašome įvesti figūrą prieš tęsiant."); return; }
-      order.object = obj;
-      nextStep(step);
-    }
-    function showSummary() {
-      order.text = document.getElementById("customText").value.trim();
-      order.color = document.getElementById("color").value;
-      order.date = document.getElementById("date").value;
+    // Stretch deformation (Apple-style overscroll)
+    const glass = document.getElementById("glass");
+    let startY = 0, pulling = false;
 
-      const summary = `
-        Objektas: ${order.object}<br>
-        Tekstas: ${order.text || "—"}<br>
-        Spalva: ${order.color}<br>
-        Data: ${order.date || "—"}
-      `;
-      document.getElementById("summaryText").innerHTML = summary;
-
-      // Fill hidden inputs for Formspree
-      document.getElementById("formObject").value = order.object;
-      document.getElementById("formText").value = order.text;
-      document.getElementById("formColor").value = order.color;
-      document.getElementById("formDate").value = order.date;
-
-      document.getElementById("step"+currentStep)?.classList.remove("active");
-      document.getElementById("summaryStep").classList.add("active");
-      currentStep = "summaryStep";
+    function setStretch(scale) {
+      glass.style.transform = `scaleY(${scale})`;
     }
+
+    function resetStretch() {
+      glass.style.transition = "transform 0.4s cubic-bezier(0.25, 1.25, 0.5, 1)";
+      setStretch(1);
+      setTimeout(() => {
+        glass.style.transition = "";
+      }, 400);
+    }
+
+    // Touch
+    window.addEventListener("touchstart", e => {
+      if (window.scrollY <= 0) {
+        startY = e.touches[0].clientY;
+        pulling = true;
+      }
+    });
+
+    window.addEventListener("touchmove", e => {
+      if (!pulling) return;
+      const delta = e.touches[0].clientY - startY;
+      if (delta > 0) {
+        setStretch(1 + Math.min(delta / 300, 0.25));
+      }
+    });
+
+    window.addEventListener("touchend", () => {
+      if (pulling) resetStretch();
+      pulling = false;
+    });
+
+    // Desktop overscroll (wheel)
+    window.addEventListener("wheel", e => {
+      if (window.scrollY <= 0 && e.deltaY < 0) {
+        setStretch(1.08);
+        resetStretch();
+      }
+    });
+
+    // Desktop drag with mouse
+    let isDragging = false;
+    window.addEventListener("mousedown", e => {
+      if (window.scrollY <= 0) {
+        isDragging = true;
+        startY = e.clientY;
+      }
+    });
+    window.addEventListener("mousemove", e => {
+      if (!isDragging) return;
+      const delta = e.clientY - startY;
+      if (delta > 0) {
+        setStretch(1 + Math.min(delta / 300, 0.25));
+      }
+    });
+    window.addEventListener("mouseup", () => {
+      if (isDragging) resetStretch();
+      isDragging = false;
+    });
   </script>
 </body>
 </html>
