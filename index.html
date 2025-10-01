@@ -13,7 +13,7 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(to bottom, #a8e6a3, #a8d8f0);
+      background: linear-gradient(to bottom, #b8e6c1, #b8e6c1 40%, #b8d6f0 100%);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -119,6 +119,20 @@
       color: rgba(0,0,0,0.85);
     }
 
+    .order-links {
+      margin-top: 15px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .order-links a {
+      display: block;
+      margin: 5px 0;
+      color: #007aff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
     footer {
       font-size: 0.95rem;
       opacity: 0.85;
@@ -155,65 +169,10 @@
       <h1>Pasaulinukai Lietuva</h1>
       <h2 class="slogan">Pasaulis ant tavo raktų</h2>
 
-      <!-- Step 1 -->
-      <div class="step active" id="step1">
-        <label for="object">Pasirinkite objektą:</label>
-        <input type="text" id="object" placeholder="Įveskite figūrą">
-        <div class="btn-row">
-          <button onclick="validateAndNext(2)">Toliau</button>
-        </div>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="step" id="step2">
-        <label for="customText">Įveskite tekstą (max 8 raidės):</label>
-        <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
-        <div class="btn-row">
-          <button onclick="prevStep(1)">Atgal</button>
-          <button onclick="nextStep(3)">Toliau</button>
-          <button onclick="nextStep(3)">Praleisti</button>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="step" id="step3">
-        <label for="color">Pasirinkite spalvą:</label>
-        <select id="color">
-          <option value="pilka" selected>Pilka (numatytoji)</option>
-          <option value="raudona">Raudona</option>
-          <option value="mėlyna">Mėlyna</option>
-          <option value="žalia">Žalia</option>
-          <option value="juoda">Juoda</option>
-          <option value="balta">Balta</option>
-          <option value="artimiausia">Artimiausia pasirinktam objektui</option>
-        </select>
-        <div class="btn-row">
-          <button onclick="prevStep(2)">Atgal</button>
-          <button onclick="nextStep(4)">Toliau</button>
-        </div>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="step" id="step4">
-        <p>Ką norite pridėti?</p>
-        <div class="btn-row">
-          <button onclick="nextStep(1)">Pridėti daugiau figūrų</button>
-          <button onclick="showDate()">Pridėti datą</button>
-          <button onclick="finish()">Baigti</button>
-        </div>
-        <div class="btn-row">
-          <button onclick="prevStep(3)">Atgal</button>
-        </div>
-      </div>
-
-      <!-- Date Option -->
-      <div class="step" id="dateStep">
-        <label for="date">Pasirinkite datą:</label>
-        <input type="date" id="date">
-        <div class="btn-row">
-          <button onclick="prevStep(4)">Atgal</button>
-          <button onclick="finish()">Baigti</button>
-        </div>
+      <p>Norite užsisakyti?</p>
+      <div class="order-links">
+        <a href="https://formspree.io/f/mgvnyvbv" target="_blank">Pildyti užsakymo formą čia (Formspree)</a>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" target="_blank">Pildyti „Google Forms“</a>
       </div>
 
       <div class="prototype-message">
@@ -228,47 +187,16 @@
   </footer>
 
   <script>
-    let currentStep = 1;
-    function nextStep(step) {
-      document.getElementById("step"+currentStep).classList.remove("active");
-      document.getElementById("step"+step).classList.add("active");
-      currentStep = step;
-    }
-    function prevStep(step) {
-      document.getElementById("step"+currentStep).classList.remove("active");
-      document.getElementById("step"+step).classList.add("active");
-      currentStep = step;
-    }
-    function showDate() {
-      document.getElementById("step"+currentStep).classList.remove("active");
-      document.getElementById("dateStep").classList.add("active");
-      currentStep = "dateStep";
-    }
-    function finish() {
-      alert("Užsakymas baigtas! Ačiū.");
-      location.reload();
-    }
-
-    // Validation for first step
-    function validateAndNext(step) {
-      const obj = document.getElementById("object").value.trim();
-      if (!obj) {
-        alert("Prašome įvesti figūrą prieš tęsiant.");
-        return;
-      }
-      nextStep(step);
-    }
-
-    // Mobile-only deformation effect (wrapper + footer)
+    // Mobile-only deformation (wrapper + footer)
     if (/Mobi|Android/i.test(navigator.userAgent)) {
       const wrapper = document.getElementById("wrapper");
       const footer = document.getElementById("footer");
 
       window.addEventListener("scroll", () => {
         const scrolled = window.scrollY;
-        const skew = Math.min(scrolled / 150, 8);
-        wrapper.style.transform = `skewY(${skew}deg)`;
-        footer.style.transform = `skewY(${skew}deg)`;
+        const maxSkew = Math.min(scrolled/150, 8);
+        wrapper.style.transform = `skewY(${maxSkew}deg)`;
+        footer.style.transform = `skewY(${maxSkew}deg)`;
       });
     }
   </script>
