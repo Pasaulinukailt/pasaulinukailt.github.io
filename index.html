@@ -1,406 +1,258 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pasaulinukai — 3D ir Medžio užsakymai</title>
-  <style>
-    /* Reset */
-    *{box-sizing:border-box;margin:0;padding:0}
-    html,body{height:100%}
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-      background: radial-gradient(circle at 10% 10%, #ddf7e8 0%, #dcedc1 40%, #cfeee0 100%);
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      min-height:100vh;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:5vh 3vw;
-      color:#063048;
-    }
-
-    /* Card (liquid glass) */
-    .card{
-      width:100%;max-width:980px;border-radius:20px;padding:28px;position:relative;overflow:visible;
-      background:linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06));
-      border:1px solid rgba(255,255,255,0.5);
-      box-shadow:0 20px 60px rgba(6,18,36,0.12), inset 0 8px 40px rgba(255,255,255,0.08);
-      backdrop-filter: blur(18px) saturate(180%);
-    }
-
-    /* Visual overlay (shimmer) - non-blocking */
-    .card .shimmer{
-      pointer-events: none;
-      position:absolute;left:-40%;top:-60%;width:180%;height:160%;
-      background: linear-gradient(120deg,
-        rgba(255,255,255,0.22) 0%,
-        rgba(255,255,255,0.06) 35%,
-        rgba(255,255,255,0.02) 50%,
-        rgba(255,255,255,0) 70%);
-      transform:rotate(-12deg);
-      filter: blur(16px);
-      opacity:0.95;
-      z-index:2;
-      animation:shimmer 8s linear infinite;
-    }
-    @keyframes shimmer{0%{transform:translateX(-40%) rotate(-12deg)}100%{transform:translateX(40%) rotate(-12deg)}}
-
-    /* Inner soft glow rings */
-    .glow{pointer-events:none;position:absolute;border-radius:50%;filter:blur(10px);opacity:0.9;z-index:1}
-    .glow.large{right:-8%;top:-10%;width:280px;height:280px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), rgba(255,255,255,0.02) 40%, transparent 60%)}
-    .glow.small{right:10%;top:60%;width:120px;height:120px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), transparent 60%)}
-
-    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;position:relative;z-index:3}
-    h1{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;background:linear-gradient(90deg,#0f6fff,#66b3ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .slogan{font-size:0.95rem;color:rgba(7,25,45,0.85)}
-    .google-link{display:inline-block;padding:8px 12px;border-radius:12px;background:#66b3ff;color:#06325b;text-decoration:none;font-weight:700}
-
-    .layout{display:grid;grid-template-columns:1fr 340px;gap:18px;position:relative;z-index:3}
-    @media(max-width:980px){.layout{grid-template-columns:1fr}}
-
-    label{display:block;font-weight:700;margin:8px 0 6px}
-    input[type=text],select,input[type=date],input[type=email],input[type=tel]{width:100%;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.98);font-size:1rem}
-
-    /* Pastel-blue buttons (solid) */
-    .btn{background:#9fc9ff;border:none;padding:10px 14px;border-radius:12px;color:#03325a;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(16,82,138,0.08);transition:transform .12s ease, box-shadow .12s ease}
-    .btn:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(16,82,138,0.12)}
-    .btn.secondary{background:#eaf6ff;color:#06325b}
-
-    .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .note{font-size:.92rem;color:rgba(3,50,90,0.75);background:rgba(255,255,255,0.6);padding:10px;border-radius:10px;margin-top:12px}
-
-    .priceBox{font-weight:900;font-size:1.15rem;color:#024d21;padding:12px;border-radius:10px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(250,255,250,0.9));box-shadow:inset 0 2px 6px rgba(0,0,0,0.02)}
-
-    .pulse{animation:pulse 2.8s ease-in-out infinite}
-    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.01)}100%{transform:scale(1)}}
-
-    footer{margin-top:14px;text-align:center;font-size:.95rem;color:rgba(0,0,0,0.55)}
-
-    /* ensure content above shimmer for clicks */
-    .card > * { position: relative; z-index: 3; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pasaulinukai Lietuva</title>
+<style>
+* {margin:0;padding:0;box-sizing:border-box;}
+body {
+  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: radial-gradient(circle at top center, #b5efc1, #dcedc1, #a8e6cf);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  overflow-x:hidden;
+  color:#111;
+}
+.glass {
+  background:rgba(255,255,255,0.3);
+  border-radius:24px;
+  padding:30px 40px;
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.3);
+  box-shadow:0 8px 40px rgba(0,0,0,0.25), inset 0 0 40px rgba(255,255,255,0.05);
+  width:90%;
+  max-width:850px;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+  text-align:center;
+  animation:fadeIn 0.9s ease forwards;
+}
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(30px);}
+  to {opacity:1; transform:translateY(0);}
+}
+h1 {
+  font-size:2.5rem;
+  font-weight:700;
+  background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+h2.slogan {
+  font-size:1.2rem;
+  font-weight:500;
+  color:rgba(20,20,20,0.75);
+}
+.btn-link {
+  display:inline-block;
+  margin-top:10px;
+  padding:10px 20px;
+  background:#007aff;
+  color:#fff;
+  border-radius:12px;
+  text-decoration:none;
+  font-weight:600;
+}
+.step {display:none;flex-direction:column;gap:15px;}
+.step.active {display:flex;}
+input, select, button {
+  padding:12px 16px;
+  border-radius:12px;
+  border:none;
+  font-size:1rem;
+  outline:none;
+  width:100%;
+}
+button {
+  cursor:pointer;
+  background:linear-gradient(90deg,#9ecbff,#7ec8ff,#a6d0ff);
+  color:#fff;
+  font-weight:600;
+  transition:transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+}
+button:hover {
+  transform:scale(1.05);
+  box-shadow:0 6px 18px rgba(0,0,0,0.25);
+}
+.btn-row {display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+.prototype-message {
+  background:rgba(255,255,255,0.3);
+  border-radius:18px;
+  padding:15px 20px;
+  backdrop-filter:blur(15px) saturate(160%);
+  -webkit-backdrop-filter:blur(15px) saturate(160%);
+  border:1px solid rgba(255,255,255,0.4);
+  font-size:1rem;
+  color:rgba(0,0,0,0.85);
+}
+footer {font-size:0.95rem;opacity:0.85;padding:25px;text-align:center;}
+footer p {margin:5px 0;}
+</style>
 </head>
 <body>
-  <div class="card" id="card">
-    <!-- visual layers (non-blocking) -->
-    <div class="shimmer" aria-hidden="true"></div>
-    <div class="glow large" aria-hidden="true"></div>
-    <div class="glow small" aria-hidden="true"></div>
+<div class="glass" id="glassBox">
+  <h1>Pasaulinukai Lietuva</h1>
+  <h2 class="slogan">Pasaulis ant tavo raktų</h2>
+  
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" target="_blank" class="btn-link">Užpildyti per Google Forms</a>
+  <p>Arba tęskite užsakymą svetainėje:</p>
 
-    <header>
-      <div>
-        <h1>Pasaulinukai Lietuva</h1>
-        <div class="slogan">Pasaulis ant tavo raktų</div>
-      </div>
-      <div>
-        <a class="google-link" href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" target="_blank" rel="noopener">Google Forms</a>
-      </div>
-    </header>
-
-    <div class="layout">
-      <main>
-        <!-- Start -->
-        <section id="start">
-          <label>Ką norite užsisakyti?</label>
-          <div class="btn-row" style="margin-bottom:10px">
-            <button class="btn" id="start3d">3D spausdinimas — €12.00</button>
-            <button class="btn secondary" id="startWood">Medžio graviravimas — €4.99</button>
-          </div>
-          <div class="note">Pasirinkite 3D čia (pilna sklandi eiga). Medis atskirai — paprastesnė forma.</div>
-        </section>
-
-        <!-- 3D flow -->
-        <section id="flow" style="display:none; margin-top:12px">
-          <!-- Step 1: object -->
-          <div id="step1">
-            <label for="objectInput">1) Įveskite norimą objektą (pvz. Eifelio bokštas)</label>
-            <input id="objectInput" type="text" placeholder="Įveskite objektą...">
-            <div style="margin-top:10px" class="btn-row">
-              <button class="btn" id="toStep2">Toliau</button>
-            </div>
-          </div>
-
-          <!-- Step 2: text -->
-          <div id="step2" style="display:none; margin-top:12px">
-            <label for="textInput">2) Tekstas ant pakabuko (max 8 raidės, nebūtina)</label>
-            <input id="textInput" type="text" maxlength="8" placeholder="Tekstas (nebūtina)">
-            <div style="margin-top:10px" class="btn-row">
-              <button class="btn secondary" id="backTo1">Atgal</button>
-              <button class="btn" id="toStep3">Toliau</button>
-            </div>
-          </div>
-
-          <!-- Step 3: color -->
-          <div id="step3" style="display:none; margin-top:12px">
-            <label for="colorInput">3) Spalva</label>
-            <select id="colorInput">
-              <option value="pilka">Pilka (numatyta)</option>
-              <option value="raudona">Raudona</option>
-              <option value="melyna">Mėlyna</option>
-              <option value="zalia">Žalia</option>
-              <option value="juoda">Juoda</option>
-              <option value="balta">Balta</option>
-              <option value="artimiausia">Artimiausia pasirinktam objektui</option>
-            </select>
-            <div style="margin-top:10px" class="btn-row">
-              <button class="btn secondary" id="backTo2">Atgal</button>
-              <button class="btn" id="toStep4">Toliau</button>
-            </div>
-          </div>
-
-          <!-- Step 4: contact method -->
-          <div id="step4" style="display:none; margin-top:12px">
-            <label>4) Pageidaujamas kontaktavimo būdas</label>
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <label style="display:flex;align-items:center;gap:8px"><input type="radio" name="contactMethod" value="email" checked> El. paštas</label>
-              <label style="display:flex;align-items:center;gap:8px"><input type="radio" name="contactMethod" value="sms"> SMS</label>
-            </div>
-            <div style="margin-top:10px" class="btn-row">
-              <button class="btn secondary" id="backTo3">Atgal</button>
-              <button class="btn" id="toSummary">Peržiūrėti santrauką</button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Wood flow -->
-        <section id="flowWood" style="display:none; margin-top:12px">
-          <label for="woodText">Tekstas graviravimui (nebūtina)</label>
-          <input id="woodText" type="text" maxlength="50" placeholder="Tekstas (nebūtina)">
-          <label for="woodContact" style="margin-top:8px">Kontaktas</label>
-          <select id="woodContact">
-            <option value="email">El. paštas</option>
-            <option value="sms">SMS</option>
-          </select>
-          <div class="btn-row" style="margin-top:10px">
-            <button class="btn" id="reviewWood">Peržiūrėti santrauką</button>
-            <button class="btn secondary" id="cancelWood">Atšaukti</button>
-          </div>
-        </section>
-
-        <!-- Summary -->
-        <section id="summary" style="display:none; margin-top:12px">
-          <h3>Santrauka</h3>
-          <div id="summaryBox" style="text-align:left;padding:14px;border-radius:12px;background:rgba(255,255,255,0.98);color:#022a46"></div>
-
-          <form id="formspree" action="https://formspree.io/f/mgvnyvbv" method="POST">
-            <input type="hidden" name="orderType" id="f_type" value="3D">
-            <input type="hidden" name="object" id="f_object">
-            <input type="hidden" name="text" id="f_text">
-            <input type="hidden" name="color" id="f_color">
-            <input type="hidden" name="contactMethod" id="f_contact">
-            <input type="hidden" name="price" id="f_price">
-
-            <label>Vardas ir pavardė</label>
-            <input name="fullname" type="text" required>
-            <label>El. paštas</label>
-            <input name="email" type="email" required>
-            <label>Telefono numeris</label>
-            <input name="phone" type="tel" required>
-
-            <div style="margin-top:12px" class="btn-row">
-              <button class="btn" type="submit">Siųsti užklausą</button>
-              <button type="button" class="btn secondary" id="startOver">Pradėti iš naujo</button>
-            </div>
-          </form>
-        </section>
-      </main>
-
-      <aside>
-        <div class="priceBox pulse" id="priceBox">Kaina: €12.00 (bus patvirtinta santraukoje)</div>
-        <div class="note">Kaina fiksuota: 3D pakabukas – €12.00. Medis – €4.99. Siuntimas derinamas susisiekus.</div>
-      </aside>
+  <!-- Step 1 -->
+  <div class="step active" id="step1">
+    <label for="type">Pasirinkite gamybos tipą:</label>
+    <select id="type">
+      <option value="3d">3D spausdinimas (€12)</option>
+      <option value="wood">Medžio graviravimas (€4.99)</option>
+    </select>
+    <label for="object">Įveskite objektą arba gyvūną:</label>
+    <input type="text" id="object" placeholder="Pvz.: Eifelio bokštas">
+    <div class="btn-row">
+      <button onclick="validateAndNext(2)">Toliau</button>
     </div>
   </div>
 
-  <script>
-    // Elements
-    const start3d = document.getElementById('start3d');
-    const startWood = document.getElementById('startWood');
-    const startSection = document.getElementById('start');
-    const flow = document.getElementById('flow');
-    const flowWood = document.getElementById('flowWood');
-    const summary = document.getElementById('summary');
-    const summaryBox = document.getElementById('summaryBox');
+  <!-- Step 2 -->
+  <div class="step" id="step2">
+    <label for="customText">Įveskite tekstą (nebūtina, max 8 raidės):</label>
+    <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
+    <div class="btn-row">
+      <button onclick="prevStep(1)">Atgal</button>
+      <button onclick="nextStep(3)">Toliau</button>
+    </div>
+  </div>
 
-    // steps
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const step3 = document.getElementById('step3');
-    const step4 = document.getElementById('step4');
+  <!-- Step 3 -->
+  <div class="step" id="step3">
+    <label for="color">Pasirinkite spalvą:</label>
+    <select id="color">
+      <option value="pilka">Pilka (numatyta)</option>
+      <option value="raudona">Raudona</option>
+      <option value="mėlyna">Mėlyna</option>
+      <option value="žalia">Žalia</option>
+      <option value="juoda">Juoda</option>
+      <option value="balta">Balta</option>
+      <option value="artimiausia">Artimiausia pasirinktam objektui</option>
+    </select>
+    <div class="btn-row">
+      <button onclick="prevStep(2)">Atgal</button>
+      <button onclick="nextStep(4)">Toliau</button>
+    </div>
+  </div>
 
-    // inputs
-    const objectInput = document.getElementById('objectInput');
-    const textInput = document.getElementById('textInput');
-    const colorInput = document.getElementById('colorInput');
+  <!-- Step 4 (Summary + Form) -->
+  <div class="step" id="step4">
+    <h3>Užsakymo santrauka</h3>
+    <p id="summaryText"></p>
+    <form action="https://formspree.io/f/mgvnyvbv" method="POST" id="orderForm">
+      <input type="hidden" name="object" id="formObject">
+      <input type="hidden" name="customText" id="formText">
+      <input type="hidden" name="color" id="formColor">
+      <input type="hidden" name="type" id="formType">
+      <input type="hidden" name="price" id="formPrice">
+      
+      <label>Pilnas vardas:</label>
+      <input type="text" name="fullname" required>
 
-    // wood inputs
-    const woodText = document.getElementById('woodText');
-    const woodContact = document.getElementById('woodContact');
+      <label>El. paštas:</label>
+      <input type="email" name="email" required>
 
-    // form hidden
-    const f_type = document.getElementById('f_type');
-    const f_object = document.getElementById('f_object');
-    const f_text = document.getElementById('f_text');
-    const f_color = document.getElementById('f_color');
-    const f_contact = document.getElementById('f_contact');
-    const f_price = document.getElementById('f_price');
+      <label>Telefono numeris:</label>
+      <input type="tel" name="phone" required>
 
-    // price constants
-    const PRICE_3D = 12.00;
-    const PRICE_WOOD = 4.99;
+      <label>Pageidaujamas kontaktas:</label>
+      <select name="contactMethod" required>
+        <option value="email">El. paštas</option>
+        <option value="sms">SMS</option>
+      </select>
 
-    // Start 3D
-    start3d.addEventListener('click', () => {
-      startSection.style.display = 'none';
-      flow.style.display = 'block';
-      step1.style.display = 'block';
-      step2.style.display = 'none';
-      step3.style.display = 'none';
-      step4.style.display = 'none';
-      document.getElementById('priceBox').textContent = 'Kaina: €12.00 (bus patvirtinta santraukoje)';
-    });
+      <button type="submit">Siųsti užklausą</button>
+    </form>
+    <div class="btn-row">
+      <button onclick="prevStep(3)">Atgal</button>
+      <button onclick="resetOrder()">Naujas užsakymas</button>
+    </div>
+  </div>
 
-    // Start Wood
-    startWood.addEventListener('click', () => {
-      startSection.style.display = 'none';
-      flowWood.style.display = 'block';
-      document.getElementById('priceBox').textContent = 'Kaina: €4.99 (bus patvirtinta santraukoje)';
-    });
+  <div class="prototype-message">Ši svetainė yra prototipas. Užsakymas bus patvirtintas susisiekus su jumis.</div>
+</div>
 
-    // 3D navigation
-    document.getElementById('toStep2').addEventListener('click', () => {
-      if (!objectInput.value.trim()) { objectInput.focus(); return; }
-      step1.style.display = 'none';
-      step2.style.display = 'block';
-    });
-    document.getElementById('backTo1').addEventListener('click', () => {
-      step2.style.display = 'none'; step1.style.display = 'block';
-    });
+<footer>
+  <p>All rights reserved © Pasaulinukai 2025</p>
+</footer>
 
-    document.getElementById('toStep3').addEventListener('click', () => {
-      step2.style.display = 'none'; step3.style.display = 'block';
-    });
-    document.getElementById('backTo2').addEventListener('click', () => {
-      step3.style.display = 'none'; step2.style.display = 'block';
-    });
+<script>
+let currentStep = 1;
+let order = { type:"", object:"", text:"", color:"", price:0 };
 
-    document.getElementById('toStep4').addEventListener('click', () => {
-      step3.style.display = 'none'; step4.style.display = 'block';
-    });
-    document.getElementById('backTo3').addEventListener('click', () => {
-      step4.style.display = 'none'; step3.style.display = 'block';
-    });
+function nextStep(step) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + step).classList.add('active');
+  currentStep = step;
+}
 
-    // To summary
-    document.getElementById('toSummary').addEventListener('click', () => {
-      buildSummary3D();
-    });
+function prevStep(step) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + step).classList.add('active');
+  currentStep = step;
+}
 
-    // Wood review
-    document.getElementById('reviewWood').addEventListener('click', () => {
-      buildSummaryWood();
-    });
-    document.getElementById('cancelWood').addEventListener('click', () => {
-      flowWood.style.display = 'none';
-      startSection.style.display = 'block';
-      document.getElementById('priceBox').textContent = 'Kaina: €12.00 (bus patvirtinta santraukoje)';
-    });
+function validateAndNext(step) {
+  const type = document.getElementById("type").value;
+  const obj = document.getElementById("object").value.trim();
+  if (!obj) {
+    alert("Įveskite objektą prieš tęsiant.");
+    return;
+  }
+  order.type = type;
+  order.object = obj;
+  nextStep(step);
+}
 
-    // Start over
-    document.getElementById('startOver').addEventListener('click', resetAll);
+function calculatePrice() {
+  order.price = (order.type === "3d") ? 12.00 : 4.99;
+}
 
-    function buildSummary3D(){
-      const obj = objectInput.value.trim();
-      const txt = textInput.value.trim();
-      const col = colorInput.value;
-      const contact = document.querySelector('input[name="contactMethod"]:checked')?.value || 'email';
+function nextStepAndShowSummary() {
+  calculatePrice();
+  showSummary();
+  nextStep(4);
+}
 
-      // fill summary
-      let html = '';
-      html += `<strong>Tipas:</strong> 3D spausdinimas<br>`;
-      html += `<strong>Objektas:</strong> ${escapeHtml(obj) || '—'}<br>`;
-      html += `<strong>Tekstas:</strong> ${escapeHtml(txt) || '—'}<br>`;
-      html += `<strong>Spalva:</strong> ${escapeHtml(col)}<br>`;
-      html += `<strong>Kontaktas:</strong> ${escapeHtml(contact)}<br>`;
-      html += `<hr><strong>Bendra kaina:</strong> €${PRICE_3D.toFixed(2)}`;
+function showSummary() {
+  order.text = document.getElementById("customText").value.trim();
+  order.color = document.getElementById("color").value;
+  calculatePrice();
 
-      summaryBox.innerHTML = html;
+  const summary = `
+  <strong>Tipas:</strong> ${order.type === "3d" ? "3D spausdinimas" : "Medžio graviravimas"}<br>
+  <strong>Objektas:</strong> ${order.object}<br>
+  <strong>Tekstas:</strong> ${order.text || "—"}<br>
+  <strong>Spalva:</strong> ${order.color}<br>
+  <strong>Kaina:</strong> €${order.price.toFixed(2)}
+  `;
+  document.getElementById("summaryText").innerHTML = summary;
 
-      // hidden inputs
-      f_type.value = '3D';
-      f_object.value = obj;
-      f_text.value = txt;
-      f_color.value = col;
-      f_contact.value = contact;
-      f_price.value = PRICE_3D.toFixed(2);
+  document.getElementById("formType").value = order.type;
+  document.getElementById("formObject").value = order.object;
+  document.getElementById("formText").value = order.text;
+  document.getElementById("formColor").value = order.color;
+  document.getElementById("formPrice").value = order.price.toFixed(2);
 
-      // switch view
-      flow.style.display = 'none';
-      summary.style.display = 'block';
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
+  nextStep(4);
+}
 
-    function buildSummaryWood(){
-      const txt = woodText.value.trim();
-      const contact = woodContact.value;
-
-      let html = '';
-      html += `<strong>Tipas:</strong> Medžio graviravimas<br>`;
-      html += `<strong>Tekstas:</strong> ${escapeHtml(txt) || '—'}<br>`;
-      html += `<strong>Kontaktas:</strong> ${escapeHtml(contact)}<br>`;
-      html += `<hr><strong>Bendra kaina:</strong> €${PRICE_WOOD.toFixed(2)}`;
-
-      summaryBox.innerHTML = html;
-
-      f_type.value = 'WOOD';
-      f_object.value = 'Medžio graviravimas';
-      f_text.value = txt;
-      f_color.value = '';
-      f_contact.value = contact;
-      f_price.value = PRICE_WOOD.toFixed(2);
-
-      flowWood.style.display = 'none';
-      summary.style.display = 'block';
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    function resetAll(){
-      // fields
-      objectInput.value = '';
-      textInput.value = '';
-      colorInput.value = 'pilka';
-      document.querySelector('input[name="contactMethod"][value="email"]').checked = true;
-      woodText.value = '';
-      woodContact.value = 'email';
-      // views
-      summary.style.display = 'none';
-      flow.style.display = 'none';
-      flowWood.style.display = 'none';
-      startSection.style.display = 'block';
-      document.getElementById('priceBox').textContent = 'Kaina: €12.00 (bus patvirtinta santraukoje)';
-    }
-
-    function escapeHtml(s){ if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
-
-    // Entrance pulse removed quickly so clickable immediately
-    window.addEventListener('load', ()=>{ const card = document.getElementById('card'); card.classList.add('pulse'); setTimeout(()=>card.classList.remove('pulse'),600); });
-
-    /* Overscroll/stretch (non-blocking) */
-    (function(){
-      const el = document.getElementById('card');
-      let startY=0,pulling=false,anim=null;
-      function setStretch(s){ el.style.transform = `translateY(0) scaleY(${s})`; }
-      function release(){ const dur=300; const t0=performance.now(); const from = parseFloat(getComputedStyle(el).transform.split(',')[5])||1; if(anim) cancelAnimationFrame(anim);
-        function step(t){ const p=Math.min(1,(t-t0)/dur); const eased=1-Math.pow(1-p,3); const val = from + (1-from)*eased; setStretch(val); if(p<1) anim=requestAnimationFrame(step); else anim=null; }
-        anim=requestAnimationFrame(step);
-      }
-      window.addEventListener('touchstart', e=>{ if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true; } },{passive:true});
-      window.addEventListener('touchmove', e=>{ if(!pulling) return; const d=e.touches[0].clientY-startY; if(d>0){ const s = 1 + Math.min(0.28, Math.log10(1+d)*0.08); setStretch(s); } },{passive:true});
-      window.addEventListener('touchend', ()=>{ if(pulling) release(); pulling=false; });
-      window.addEventListener('wheel', e=>{ if(window.scrollY<=0 && e.deltaY<0){ setStretch(1.06); setTimeout(()=>release(),120); } },{passive:true});
-    })();
-  </script>
+function resetOrder() {
+  order = { type:"", object:"", text:"", color:"", price:0 };
+  document.getElementById("orderForm").reset();
+  nextStep(1);
+}
+</script>
 </body>
 </html>
