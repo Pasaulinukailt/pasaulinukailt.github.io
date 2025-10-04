@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pasaulinukai Lietuva — Prototipas</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pasaulinukai — 3D arba Medžio graviravimas</title>
   <style>
-    * {margin:0;padding:0;box-sizing:border-box}
+    *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
     body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;background:radial-gradient(circle at top center,#a8e6cf,#dcedc1,#bbdefb);display:flex;align-items:flex-start;justify-content:center;padding:4vh 3vw;color:#111}
 
-    .glass{width:100%;max-width:980px;background:rgba(255,255,255,0.25);border-radius:24px;padding:28px;backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,0.3);box-shadow:0 18px 50px rgba(8,12,20,0.12),inset 0 0 30px rgba(255,255,255,0.04);transform-origin:top center;transform:translateY(20px) scaleY(1.02);opacity:0;transition:all .6s cubic-bezier(.22,1,.36,1)}
+    .glass{width:100%;max-width:980px;background:rgba(255,255,255,0.25);border-radius:20px;padding:22px;backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,0.32);box-shadow:0 18px 50px rgba(8,12,20,0.12),inset 0 0 30px rgba(255,255,255,0.04);transform-origin:top center;transform:translateY(20px) scaleY(1.02);opacity:0;transition:all .6s cubic-bezier(.22,1,.36,1)}
     .glass.loaded{transform:translateY(0) scaleY(1);opacity:1}
 
-    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
     h1{font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:800;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,#ffb86b,#ff7aa2);color:white;font-weight:700}
     h2.slogan{font-size:1rem;color:rgba(10,10,10,0.75);margin-top:6px}
@@ -24,7 +24,7 @@
     input[type=text],select,input[type=date]{width:100%;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.92)}
     .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
     button{padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);color:#fff;font-weight:700;cursor:pointer}
-    button.muted{background:rgba(255,255,255,0.7);color:#111}
+    button.muted{background:rgba(255,255,255,0.8);color:#111}
 
     .note{font-size:.92rem;color:rgba(0,0,0,0.65);background:rgba(255,255,255,0.28);padding:10px;border-radius:10px;margin-top:12px}
 
@@ -33,6 +33,10 @@
     .preview canvas{max-width:100%;height:auto;border-radius:8px}
     .price{font-weight:900;font-size:1.15rem;color:#0b6;padding:10px;border-radius:10px;text-align:center;background:rgba(255,255,255,0.32)}
     footer{margin-top:12px;text-align:center;font-size:.9rem;color:rgba(0,0,0,0.55)}
+
+    .choice-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+    .choice-card{flex:1;min-width:180px;padding:12px;border-radius:12px;background:rgba(255,255,255,0.9);text-align:left}
+    .choice-card h3{margin-bottom:6px}
   </style>
 </head>
 <body>
@@ -49,275 +53,272 @@
 
     <div class="layout">
       <main>
-        <!-- Keep original flow: step1 -> 2 -> 3 -> 4, with add-more option -->
-        <div class="step" id="step1">
-          <label for="object">Pasirinkite objektą:</label>
-          <input id="object" type="text" placeholder="Įveskite figūrą (pvz. Eifelio bokštas)">
-          <div class="btn-row">
-            <button id="toStep2">Toliau</button>
+        <!-- START: Initial choice -->
+        <div id="choiceScreen">
+          <label>Ką norite užsisakyti?</label>
+          <div class="choice-grid">
+            <div class="choice-card">
+              <h3>3D spausdintas pakabukas</h3>
+              <p>Standartinė 3D spausdinimo sritis. Kaina: €9.99 (paprastas) / €14.99 (sudėtingas).</p>
+              <div class="btn-row"><button id="choose3D">Pasirinkti 3D</button></div>
+            </div>
+            <div class="choice-card">
+              <h3>Medžio graviravimas</h3>
+              <p>Atskira medinė plokštelė/graviruotas pakabukas. Kaina: €4.99 / vnt.</p>
+              <div class="btn-row"><button id="chooseWood">Pasirinkti medį</button></div>
+            </div>
           </div>
         </div>
 
-        <div class="step" id="step2">
-          <label for="customText">Įveskite tekstą (max 8 raidės):</label>
-          <input id="customText" type="text" maxlength="8" placeholder="Tekstas">
-          <div class="btn-row">
-            <button class="muted" id="backTo1">Atgal</button>
-            <button id="toStep3">Toliau</button>
-            <button class="muted" id="skipText">Praleisti</button>
+        <!-- 3D order flow (keeps original steps) -->
+        <div id="flow3D" style="display:none">
+          <div class="step" id="s1">
+            <label for="obj3d">Pasirinkite objektą (3D):</label>
+            <input id="obj3d" type="text" placeholder="pvz. Eifelio bokštas">
+            <div class="btn-row"><button id="s1next">Toliau</button></div>
+          </div>
+
+          <div class="step" id="s2" style="display:none">
+            <label for="text3d">Tekstas (max 8):</label>
+            <input id="text3d" maxlength="8" type="text">
+            <div class="btn-row"><button class="muted" id="s2back">Atgal</button><button id="s2next">Toliau</button></div>
+          </div>
+
+          <div class="step" id="s3" style="display:none">
+            <label for="color3d">Spalva:</label>
+            <select id="color3d"><option value="pilka">Pilka</option><option value="raudona">Raudona</option><option value="melyna">Mėlyna</option><option value="zalia">Žalia</option><option value="juoda">Juoda</option><option value="balta">Balta</option></select>
+            <div class="btn-row"><button class="muted" id="s3back">Atgal</button><button id="s3next">Toliau</button></div>
+          </div>
+
+          <div class="step" id="s4" style="display:none">
+            <p>Ką norite pridėti?</p>
+            <div class="btn-row"><button id="addMore3d">Pridėti daugiau figūrų</button><button id="addDate3d">Pridėti datą</button><button id="finish3d">Baigti</button></div>
+            <div class="btn-row"><button class="muted" id="s4back">Atgal</button></div>
+          </div>
+
+          <div class="step" id="date3d" style="display:none">
+            <label for="date3dInput">Data:</label>
+            <input id="date3dInput" type="date">
+            <div class="btn-row"><button class="muted" id="date3dBack">Atgal</button><button id="date3dFinish">Baigti</button></div>
           </div>
         </div>
 
-        <div class="step" id="step3">
-          <label for="color">Pasirinkite spalvą:</label>
-          <select id="color">
-            <option value="pilka">Pilka (numatyta)</option>
-            <option value="raudona">Raudona</option>
-            <option value="melyna">Mėlyna</option>
-            <option value="zalia">Žalia</option>
-            <option value="juoda">Juoda</option>
-            <option value="balta">Balta</option>
-            <option value="artimiausia">Artimiausia pasirinktam objektui</option>
-          </select>
+        <!-- Wood order flow (separate) -->
+        <div id="flowWood" style="display:none">
+          <div class="step" id="w1">
+            <label for="woodText">Tekstas graviravimui (max 12):</label>
+            <input id="woodText" maxlength="12" type="text" placeholder="Tekstas ant medžio">
+            <div class="btn-row"><button id="w1next">Toliau</button></div>
+          </div>
 
-          <label style="margin-top:8px"><input id="engrave" type="checkbox"> Medžio graviravimas (+€4.99)</label>
+          <div class="step" id="w2" style="display:none">
+            <label for="woodShape">Forma / pastabos:</label>
+            <input id="woodShape" type="text" placeholder="Pvz. apvalus pakabukas">
+            <div class="btn-row"><button class="muted" id="w2back">Atgal</button><button id="w2next">Peržiūra</button></div>
+          </div>
 
-          <div class="btn-row">
-            <button class="muted" id="backTo2">Atgal</button>
-            <button id="toStep4">Toliau</button>
+          <div class="step" id="wSummary" style="display:none">
+            <h3>Medžio užsakymo peržiūra</h3>
+            <div id="woodSummary"></div>
+            <div class="btn-row"><button id="confirmWood">Pateikti užklausą</button><button class="muted" id="backFromWood">Atgal</button></div>
           </div>
         </div>
 
-        <div class="step" id="step4">
-          <p>Ką norite pridėti?</p>
-          <div class="btn-row">
-            <button id="addMore">Pridėti daugiau figūrų</button>
-            <button id="addDateBtn">Pridėti datą</button>
-            <button id="finishBtn">Baigti</button>
-          </div>
-          <div class="btn-row">
-            <button class="muted" id="backTo3">Atgal</button>
-          </div>
-        </div>
-
-        <div class="step" id="dateStep">
-          <label for="date">Pasirinkite datą:</label>
-          <input id="date" type="date">
-          <div class="btn-row">
-            <button class="muted" id="dateBack">Atgal</button>
-            <button id="dateFinish">Baigti</button>
-          </div>
-        </div>
-
-        <div class="step" id="summaryStep">
-          <h3>Jūsų užsakymo santrauka</h3>
-          <div id="summaryText" style="text-align:left"></div>
-          <div style="margin-top:10px;text-align:left">
-            <label>Pilnas vardas:</label>
-            <input id="fullname" type="text">
-            <label>El. paštas:</label>
-            <input id="email" type="email">
-            <label>Telefonas:</label>
-            <input id="phone" type="tel">
-          </div>
-          <div class="btn-row" style="margin-top:12px">
-            <button id="submitBtn">Pateikti užklausą</button>
-            <button class="muted" id="backFromSummary">Atgal</button>
-          </div>
-        </div>
-
-        <div class="note" id="prototypeNote">Ši svetainė yra tik prototipas ir dar neveikia pilnai.</div>
       </main>
 
       <aside>
         <div class="preview">
           <canvas id="previewCanvas" width="520" height="320"></canvas>
           <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
-            <button id="openPreview">Open</button>
-            <button id="downloadPreview" class="muted">Download</button>
-            <button id="copyPreview" class="muted">Copy</button>
+            <button id="openPrev">Open</button>
+            <button id="dlPrev" class="muted">Download</button>
+            <button id="copyPrev" class="muted">Copy</button>
           </div>
-          <div style="font-size:.9rem;color:rgba(0,0,0,0.65)" id="previewHint">Peržiūra atnaujinama automatiškai.</div>
+          <div style="font-size:.9rem;color:rgba(0,0,0,0.65)" id="previewNote">Peržiūra atnaujinama automatiškai.</div>
         </div>
 
         <div class="price" id="priceBox">Apskaičiuojama kaina: €0.00</div>
 
         <div style="display:flex;gap:8px;justify-content:center">
-          <button id="sendFormBtn" class="muted">Siųsti užklausą (Formspree)</button>
+          <button id="sendForm" class="muted">Siųsti užklausą (Formspree)</button>
         </div>
 
-        <div style="font-size:.9rem;color:rgba(0,0,0,0.65);text-align:center">Pristatymas derinamas po užsakymo.</div>
+        <div style="font-size:.9rem;color:rgba(0,0,0,0.65);text-align:center">Pristatymas derinamas vėliau.</div>
       </aside>
     </div>
 
     <footer>All rights reserved Pasaulinukai 2025 — Airidas Naudzius</footer>
   </div>
 
-  <!-- hidden form fields for submission -->
   <form id="hiddenForm" action="https://formspree.io/f/mgvnyvbv" method="POST" style="display:none">
+    <input name="type" id="f_type">
     <input name="object" id="f_object">
     <input name="text" id="f_text">
     <input name="color" id="f_color">
     <input name="date" id="f_date">
     <input name="engrave" id="f_engrave">
-    <input name="price_per_unit" id="f_price_unit">
+    <input name="price_unit" id="f_price_unit">
     <input name="price_total" id="f_price_total">
-    <input name="preview_data" id="f_preview">
+    <input name="preview" id="f_preview">
     <input name="fullname" id="f_fullname">
     <input name="email" id="f_email">
     <input name="phone" id="f_phone">
   </form>
 
   <script>
-    // --- setup ---
+    // --- Init ---
     const glass = document.getElementById('glass');
-    const steps = ['step1','step2','step3','step4','dateStep','summaryStep'];
-    function show(id){ steps.forEach(s=>document.getElementById(s).style.display='none'); document.getElementById(id).style.display='block'; }
-    
-    // initial
-    window.addEventListener('load', ()=>{ glass.classList.add('loaded'); show('step1'); });
+    window.addEventListener('load', ()=>{ glass.classList.add('loaded'); });
 
     // elements
-    const objectInput = document.getElementById('object');
-    const toStep2 = document.getElementById('toStep2');
-    const backTo1 = document.getElementById('backTo1');
-    const toStep3 = document.getElementById('toStep3');
-    const skipText = document.getElementById('skipText');
-    const backTo2 = document.getElementById('backTo2');
-    const toStep4 = document.getElementById('toStep4');
-    const backTo3 = document.getElementById('backTo3');
-    const addMore = document.getElementById('addMore');
-    const addDateBtn = document.getElementById('addDateBtn');
-    const dateBack = document.getElementById('dateBack');
-    const dateFinish = document.getElementById('dateFinish');
-    const finishBtn = document.getElementById('finishBtn');
-    const customText = document.getElementById('customText');
-    const color = document.getElementById('color');
-    const engrave = document.getElementById('engrave');
-    const dateInput = document.getElementById('date');
+    const choiceScreen = document.getElementById('choiceScreen');
+    const flow3D = document.getElementById('flow3D');
+    const flowWood = document.getElementById('flowWood');
+    const choose3D = document.getElementById('choose3D');
+    const chooseWood = document.getElementById('chooseWood');
+
+    // 3D elems
+    const s1 = document.getElementById('s1'), s2=document.getElementById('s2'), s3=document.getElementById('s3'), s4=document.getElementById('s4');
+    const obj3d = document.getElementById('obj3d'), text3d=document.getElementById('text3d'), color3d=document.getElementById('color3d');
+    const s1next=document.getElementById('s1next'), s2back=document.getElementById('s2back'), s2next=document.getElementById('s2next');
+    const s3back=document.getElementById('s3back'), s3next=document.getElementById('s3next');
+    const addMore3d=document.getElementById('addMore3d'), addDate3d=document.getElementById('addDate3d'), finish3d=document.getElementById('finish3d');
+    const date3d=document.getElementById('date3d'), date3dInput=document.getElementById('date3dInput'), date3dBack=document.getElementById('date3dBack'), date3dFinish=document.getElementById('date3dFinish');
+
+    // wood elems
+    const w1=document.getElementById('w1'), w2=document.getElementById('w2'), wSummary=document.getElementById('wSummary');
+    const woodText=document.getElementById('woodText'), woodShape=document.getElementById('woodShape');
+    const w1next=document.getElementById('w1next'), w2back=document.getElementById('w2back'), w2next=document.getElementById('w2next');
+    const confirmWood=document.getElementById('confirmWood'), backFromWood=document.getElementById('backFromWood');
+
+    // preview and price
+    const previewCanvas = document.getElementById('previewCanvas'); const ctx = previewCanvas.getContext('2d');
     const priceBox = document.getElementById('priceBox');
-    const previewCanvas = document.getElementById('previewCanvas');
-    const ctx = previewCanvas.getContext('2d');
-    const openPreview = document.getElementById('openPreview');
-    const downloadPreview = document.getElementById('downloadPreview');
-    const copyPreview = document.getElementById('copyPreview');
-    const sendFormBtn = document.getElementById('sendFormBtn');
-    const summaryText = document.getElementById('summaryText');
+
+    // submission
+    const sendForm = document.getElementById('sendForm'); const hiddenForm = document.getElementById('hiddenForm');
+
+    // export buttons
+    const openPrev=document.getElementById('openPrev'), dlPrev=document.getElementById('dlPrev'), copyPrev=document.getElementById('copyPrev');
 
     // pricing constants
-    const BASE_SIMPLE = 9.99;
-    const BASE_HARD = 14.99;
-    const TEXT_FEE = 0.20;
-    const DATE_FEE = 0.20;
-    const ENGRAVE_FEE = 4.99;
-
+    const BASE_SIMPLE = 9.99, BASE_HARD = 14.99, TEXT_FEE = 0.20, DATE_FEE = 0.20, WOOD_PRICE = 4.99;
     const HARD_KEYS = ['eifel','eifelio','eiffel','burj','burj khalifa','piramid','statula','laisv'];
 
     function isHard(name){ if(!name) return false; const t=name.toLowerCase(); return HARD_KEYS.some(k=>t.includes(k)); }
 
-    function calculate(){ const name=objectInput.value.trim(); const qty=1; // original: single unit per step
-      const hard=isHard(name); const base= hard?BASE_HARD:BASE_SIMPLE; const hasText= !!customText.value.trim(); const hasDate= !!dateInput.value; const engr= engrave.checked; let per=base; if(hasText) per+=TEXT_FEE; if(hasDate) per+=DATE_FEE; if(engr) per+=ENGRAVE_FEE; const total= per * qty; return {name,qty,per: Number(per.toFixed(2)), total: Number(total.toFixed(2)), breakdown:{base,hasText,hasDate,engr}} }
+    // Flow control
+    choose3D.addEventListener('click', ()=>{ choiceScreen.style.display='none'; flow3D.style.display='block'; showStep('s1'); drawPreview(); updatePrice(); });
+    chooseWood.addEventListener('click', ()=>{ choiceScreen.style.display='none'; flowWood.style.display='block'; showStep('w1'); drawPreview(); updatePrice(); });
 
-    function updatePrice(){ const p=calculate(); priceBox.textContent = `Apskaičiuojama kaina: €${p.total.toFixed(2)}` }
-
-    // preview draw
-    function draw(){ const w=previewCanvas.width, h=previewCanvas.height; ctx.clearRect(0,0,w,h); // bg
-      const grad = ctx.createLinearGradient(0,0,w,h); grad.addColorStop(0,'#fff'); grad.addColorStop(1,'#f0f8ff'); ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
-      const name = objectInput.value.trim(); const hardModel = isHard(name);
-      ctx.save(); ctx.translate(w/2,h/2 -10);
-      // color mapping
-      let col = '#9aa0a6';
-      const c = (color.value||'pilka').toLowerCase(); if(c.includes('raud')) col='#c33'; if(c.includes('mely')||c.includes('mėly')) col='#1e88ff'; if(c.includes('žali')||c.includes('zalia')) col='#2e7d32'; if(c.includes('juod')) col='#222'; if(c.includes('balt')) col='#eee';
-      if(hardModel && name.toLowerCase().includes('eifel')){
-        // simple triangle tower
-        ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(-40,60); ctx.lineTo(0,-80); ctx.lineTo(40,60); ctx.closePath(); ctx.fill(); ctx.strokeStyle='rgba(255,255,255,0.6)'; ctx.lineWidth=2; for(let y=30;y>-40;y-=15){ ctx.beginPath(); ctx.moveTo(-30,y); ctx.lineTo(30,y+8); ctx.stroke(); }
-      } else if(hardModel && name.toLowerCase().includes('burj')){
-        ctx.fillStyle=col; ctx.fillRect(-18,-110,36,180); ctx.fillStyle='#fff'; ctx.fillRect(-8,-40,16,80);
-      } else if(hardModel && name.toLowerCase().includes('piramid')){
-        ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(0,-60); ctx.lineTo(80,60); ctx.lineTo(-80,60); ctx.closePath(); ctx.fill();
-      } else {
-        // generic keychain shape
-        ctx.fillStyle=col; roundRect(ctx,-72,-36,144,72,14,true,false); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(48,-28,8,0,Math.PI*2); ctx.fill();
-      }
-      // text
-      if(customText.value.trim()){ ctx.fillStyle='#111'; ctx.font='bold 20px system-ui,Arial'; ctx.textAlign='center'; ctx.fillText(customText.value.trim(), 0, 88); }
-      ctx.restore(); // shadow
-      ctx.globalCompositeOperation='destination-over'; ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.beginPath(); ctx.ellipse(w/2,h-18,80,10,0,0,2*Math.PI); ctx.fill(); ctx.globalCompositeOperation='source-over';
+    function showStep(id){ // hide all in both flows then show the id
+      Array.from(document.querySelectorAll('#flow3D .step')).forEach(e=>e.style.display='none');
+      Array.from(document.querySelectorAll('#flowWood .step')).forEach(e=>e.style.display='none');
+      const el = document.getElementById(id); if(el) el.style.display='block';
     }
 
-    function roundRect(ctx,x,y,w,h,r,fill,stroke){ if(typeof r==='undefined') r=5; ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); if(fill) ctx.fill(); if(stroke) ctx.stroke(); }
-
-    // wire buttons
-    toStep2.addEventListener('click', ()=>{ if(!objectInput.value.trim()){ alert('Prašome įvesti figūrą'); return;} show('step2'); draw(); updatePrice(); });
-    backTo1.addEventListener('click', ()=>show('step1'));
-    toStep3.addEventListener('click', ()=>{ show('step3'); draw(); updatePrice(); });
-    skipText.addEventListener('click', ()=>{ customText.value=''; show('step3'); draw(); updatePrice(); });
-    backTo2.addEventListener('click', ()=>show('step2'));
-    toStep4.addEventListener('click', ()=>{ show('step4'); draw(); updatePrice(); });
-    backTo3.addEventListener('click', ()=>show('step3'));
-    addMore.addEventListener('click', ()=>{ // return to step1 to add another item
-      // in original flow, user can add more — we reset form but keep preview
-      objectInput.value=''; customText.value=''; color.value='pilka'; engrave.checked=false; date.value=''; show('step1'); draw(); updatePrice();
+    // 3D navigation
+    s1next.addEventListener('click', ()=>{ if(!obj3d.value.trim()){ alert('Įveskite objektą'); return;} showStep('s2'); drawPreview(); updatePrice(); });
+    s2back.addEventListener('click', ()=>showStep('s1'));
+    s2next.addEventListener('click', ()=>showStep('s3'));
+    s3back.addEventListener('click', ()=>showStep('s2'));
+    s3next.addEventListener('click', ()=>showStep('s4'));
+    s4back.addEventListener('click', ()=>showStep('s3'));
+    addMore3d.addEventListener('click', ()=>{ // reset to s1 to add another item (keeps previous preview)
+      obj3d.value=''; text3d.value=''; color3d.value='pilka'; drawPreview(); updatePrice(); showStep('s1');
     });
-    addDateBtn.addEventListener('click', ()=>{ show('dateStep'); });
-    dateBack.addEventListener('click', ()=>show('step4'));
-    dateFinish.addEventListener('click', ()=>{ show('step4'); draw(); updatePrice(); });
-    finishBtn.addEventListener('click', ()=>{ // go to summary
-      // fill summary
-      const p = calculate(); const lines = [];
-      lines.push('<strong>Objektas:</strong> '+escapeHtml(p.name));
-      lines.push('<strong>Tekstas:</strong> '+(customText.value.trim()||'—'));
-      lines.push('<strong>Spalva:</strong> '+escapeHtml(color.value));
-      lines.push('<strong>Data:</strong> '+(date.value||'—'));
-      lines.push('<strong>Medžio graviravimas:</strong> '+(engrave.checked? 'Taip':'Ne'));
-      lines.push('<hr><strong>Apytikslė suma:</strong> €'+p.total.toFixed(2));
-      summaryText.innerHTML = lines.join('<br>');
-      show('summaryStep');
+    addDate3d.addEventListener('click', ()=>showStep('date3d'));
+    date3dBack.addEventListener('click', ()=>showStep('s4'));
+    date3dFinish.addEventListener('click', ()=>{ showStep('s4'); drawPreview(); updatePrice(); });
+    finish3d.addEventListener('click', ()=>{ // go to summary (reuse wood summary area for simplicity)
+      const p = calculate3D(); const summary = document.getElementById('woodSummary'); summary.innerHTML = `<strong>Objektas:</strong> ${escapeHtml(p.name)}<br><strong>Tekstas:</strong> ${escapeHtml(p.text||'—')}<br><strong>Spalva:</strong> ${escapeHtml(p.color)}<br><strong>Data:</strong> ${p.date||'—'}<br><strong>Medžio graviravimas:</strong> Ne<br><hr><strong>Apytikslė suma:</strong> €${p.total.toFixed(2)}`; showStep('wSummary'); // reuse wSummary to confirm and send
+      // mark type
+      document.getElementById('f_type').value='3D';
+      document.getElementById('f_object').value=p.name; document.getElementById('f_text').value=p.text||''; document.getElementById('f_color').value=p.color; document.getElementById('f_date').value=p.date||''; document.getElementById('f_price_unit').value=p.per.toFixed(2); document.getElementById('f_price_total').value=p.total.toFixed(2);
     });
 
-    backFromSummary.addEventListener('click', ()=>show('step4'));
+    // Wood navigation
+    w1next.addEventListener('click', ()=>{ if(!woodText.value.trim()){ if(!confirm('Tekstas tuščias. Tęsti be teksto?')) return;} showStep('w2'); drawPreview(); updatePrice(); });
+    w2back.addEventListener('click', ()=>showStep('w1'));
+    w2next.addEventListener('click', ()=>{ // summary
+      const ws = document.getElementById('woodSummary'); const price = calculateWood(); ws.innerHTML = `<strong>Medis — tekstas:</strong> ${escapeHtml(woodText.value||'—')}<br><strong>Forma / pastabos:</strong> ${escapeHtml(woodShape.value||'—')}<br><hr><strong>Kaina:</strong> €${price.total.toFixed(2)}`; showStep('wSummary'); document.getElementById('f_type').value='WOOD'; document.getElementById('f_text').value=woodText.value||''; document.getElementById('f_object').value=woodShape.value||'wood engraving'; document.getElementById('f_price_unit').value=price.per.toFixed(2); document.getElementById('f_price_total').value=price.total.toFixed(2); drawPreview(); updatePrice(); });
+    backFromWood.addEventListener('click', ()=>showStep('w2'));
+    confirmWood.addEventListener('click', ()=>{ // submit
+      if(!confirm('Siųsti medžio užklausą?')) return; submitHiddenForm(); });
 
-    // calculate helper used above
-    function calculate(){ const name = objectInput.value.trim(); const hard = isHard(name); const base = hard?BASE_HARD:BASE_SIMPLE; const hasText = !!customText.value.trim(); const hasDate = !!date.value; const engr = engrave.checked; let per = base; if(hasText) per += TEXT_FEE; if(hasDate) per += DATE_FEE; if(engr) per += ENGRAVE_FEE; return {name:name||'—', per: Number(per.toFixed(2)), total: Number(per.toFixed(2))}; }
+    // shared helpers
+    function calculate3D(){ const name = obj3d.value.trim(); const text = text3d.value.trim(); const col = color3d.value; const date = date3dInput.value; const hard = isHard(name); const base = hard?BASE_HARD:BASE_SIMPLE; let per=base; if(text) per+=TEXT_FEE; if(date) per+=DATE_FEE; // engraving not in 3D path here
+      const total = per; return {name,text,color:col,date,per,total}; }
+    function calculateWood(){ const text = woodText.value.trim(); const shape = woodShape.value.trim(); let per = WOOD_PRICE; if(text) per += TEXT_FEE; // allow text fee for wood
+      if(date3dInput.value) per += DATE_FEE; const total = per; return {per,total,shape}; }
 
-    function updatePrice(){ const p = calculate(); priceBox.textContent = 'Apskaičiuojama kaina: €'+p.total.toFixed(2); }
+    function updatePrice(){ // if in 3D flow and s1 filled, show 3D price; if in wood flow, show wood price
+      if(flow3D.style.display==='block'){ const p=calculate3D(); priceBox.textContent=`Apskaičiuojama kaina: €${p.total.toFixed(2)}`; }
+      else if(flowWood.style.display==='block'){ const p=calculateWood(); priceBox.textContent=`Apskaičiuojama kaina: €${p.total.toFixed(2)}`; }
+      else priceBox.textContent='Apskaičiuojama kaina: €0.00'; }
 
-    // preview exports
-    openPreview.addEventListener('click', ()=>{ const url = previewCanvas.toDataURL(); const w = window.open(''); if(!w) return alert('Popup blocked'); w.document.body.style.margin='0'; const img = w.document.createElement('img'); img.src=url; img.style.maxWidth='100%'; w.document.body.appendChild(img); });
-    downloadPreview.addEventListener('click', ()=>{ const a=document.createElement('a'); a.href=previewCanvas.toDataURL(); a.download='preview.png'; document.body.appendChild(a); a.click(); a.remove(); });
-    copyPreview.addEventListener('click', async ()=>{ try{ const dataUrl=previewCanvas.toDataURL(); const res=await fetch(dataUrl); const blob=await res.blob(); await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); alert('Preview copied to clipboard'); }catch(e){ alert('Copy failed — browser may not support'); } });
+    // preview draw (keeps simple silhouettes)
+    function drawPreview(){ const w=previewCanvas.width, h=previewCanvas.height; ctx.clearRect(0,0,w,h); // bg
+      const g = ctx.createLinearGradient(0,0,w,h); g.addColorStop(0,'#fff'); g.addColorStop(1,'#f4fbff'); ctx.fillStyle=g; ctx.fillRect(0,0,w,h);
+      ctx.save(); ctx.translate(w/2,h/2-10);
+      // determine source of data
+      let name='', text='', colorVal='pilka', isWood=false;
+      if(flow3D.style.display==='block'){ name = obj3d.value.trim() || 'Objektas'; text = text3d.value.trim(); colorVal = color3d.value; }
+      else if(flowWood.style.display==='block'){ name = woodShape.value.trim() || 'Medžio graviravimas'; text = woodText.value.trim(); colorVal = 'sienna'; isWood=true; }
+      // pick color
+      let col='#9aa0a6'; if(colorVal.includes('raud')) col='#c33'; if(colorVal.includes('mely')||colorVal.includes('mėly')) col='#1e88ff'; if(colorVal.includes('zali')||colorVal.includes('žali')) col='#2e7d32'; if(colorVal.includes('juod')) col='#222'; if(colorVal==='sienna') col='#8b5a2b';
+      // simple shapes depending on name
+      const hard = isHard(name);
+      if(isWood){ // wood plaque rectangle
+        ctx.fillStyle=col; roundRect(ctx,-140,-48,280,96,14,true,false); ctx.fillStyle='#fff'; ctx.font='bold 18px system-ui'; ctx.textAlign='center'; if(text) ctx.fillText(text,0,6); else ctx.fillText('MEDIS',0,6);
+      } else if(hard && name.toLowerCase().includes('eifel')){ ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(-40,60); ctx.lineTo(0,-80); ctx.lineTo(40,60); ctx.closePath(); ctx.fill(); ctx.strokeStyle='rgba(255,255,255,0.6)'; ctx.lineWidth=2; for(let y=30;y>-40;y-=15){ ctx.beginPath(); ctx.moveTo(-30,y); ctx.lineTo(30,y+8); ctx.stroke(); } }
+      else if(hard && name.toLowerCase().includes('burj')){ ctx.fillStyle=col; ctx.fillRect(-18,-110,36,180); ctx.fillStyle='#fff'; ctx.fillRect(-8,-40,16,80); }
+      else if(hard && name.toLowerCase().includes('piramid')){ ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(0,-60); ctx.lineTo(80,60); ctx.lineTo(-80,60); ctx.closePath(); ctx.fill(); }
+      else{ // generic keychain
+        ctx.fillStyle=col; roundRect(ctx,-72,-36,144,72,14,true,false); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(48,-28,8,0,Math.PI*2); ctx.fill(); }
+      // text
+      if(text){ ctx.fillStyle='#111'; ctx.font='bold 18px system-ui'; ctx.textAlign='center'; ctx.fillText(text,0,88); }
+      ctx.restore(); ctx.globalCompositeOperation='destination-over'; ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.beginPath(); ctx.ellipse(w/2,h-18,80,10,0,0,2*Math.PI); ctx.fill(); ctx.globalCompositeOperation='source-over'; }
 
-    // submission (hidden form)
-    sendFormBtn.addEventListener('click', ()=>{
-      const p = calculate();
-      document.getElementById('f_object').value = p.name;
-      document.getElementById('f_text').value = customText.value.trim();
-      document.getElementById('f_color').value = color.value;
-      document.getElementById('f_date').value = date.value||'';
-      document.getElementById('f_engrave').value = engrave.checked? 'yes':'no';
-      document.getElementById('f_price_unit').value = p.per.toFixed(2);
-      document.getElementById('f_price_total').value = p.total.toFixed(2);
-      document.getElementById('f_preview').value = previewCanvas.toDataURL();
-      // optionally open form in new tab
-      if(!confirm('Siųsti užklausą su apytiksle kaina €'+p.total.toFixed(2)+'?')) return;
-      document.getElementById('hiddenForm').submit();
+    function roundRect(ctx,x,y,w,h,r,fill,stroke){ if(typeof r==='undefined') r=6; ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); if(fill) ctx.fill(); if(stroke) ctx.stroke(); }
+
+    // export preview funcs
+    openPrev.addEventListener('click', ()=>{ const url=previewCanvas.toDataURL(); const w=window.open(''); if(!w)return alert('Popup blocked'); const img=w.document.createElement('img'); img.src=url; img.style.maxWidth='100%'; w.document.body.style.margin='0'; w.document.body.appendChild(img); });
+    dlPrev.addEventListener('click', ()=>{ const a=document.createElement('a'); a.href=previewCanvas.toDataURL(); a.download='preview.png'; document.body.appendChild(a); a.click(); a.remove(); });
+    copyPrev.addEventListener('click', async ()=>{ try{ const res=await fetch(previewCanvas.toDataURL()); const blob=await res.blob(); await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); alert('Peržiūra nukopijuota į iškarpinę'); }catch(e){ alert('Kopijavimas nepavyko — naršyklė gali nepalaikyti'); } });
+
+    // submit hidden form
+    function submitHiddenForm(){ // populate common fields
+      document.getElementById('f_preview').value = previewCanvas.toDataURL(); document.getElementById('f_fullname').value = document.getElementById('f_fullname').value || ''; // left empty
+      // submit
+      hiddenForm.submit(); alert('Užklausa išsiųsta. Susisieksime.'); }
+
+    // sendForm button: decide current flow
+    sendForm.addEventListener('click', ()=>{
+      if(flow3D.style.display==='block'){
+        const p=calculate3D(); document.getElementById('f_type').value='3D'; document.getElementById('f_object').value=p.name; document.getElementById('f_text').value=p.text||''; document.getElementById('f_color').value=p.color; document.getElementById('f_date').value=p.date||''; document.getElementById('f_price_unit').value=p.per.toFixed(2); document.getElementById('f_price_total').value=p.total.toFixed(2); submitHiddenForm(); }
+      else if(flowWood.style.display==='block'){
+        const p=calculateWood(); document.getElementById('f_type').value='WOOD'; document.getElementById('f_text').value=woodText.value||''; document.getElementById('f_object').value=woodShape.value||'Medžio graviravimas'; document.getElementById('f_price_unit').value=p.per.toFixed(2); document.getElementById('f_price_total').value=p.total.toFixed(2); submitHiddenForm(); }
+      else alert('Pasirinkite produkto tipą pradžioje.');
     });
 
-    // autosave preview and price when inputs change
-    [objectInput, customText, color, engrave, date].forEach(el=>{
-      el.addEventListener('input', ()=>{ draw(); updatePrice(); });
-      el.addEventListener('change', ()=>{ draw(); updatePrice(); });
-    });
+    // helper functions used earlier but needed here
+    function calculate3D(){ const name=obj3d.value.trim(); const text=text3d.value.trim(); const col=color3d.value; const date=date3dInput.value; const hard=isHard(name); const base= hard?BASE_HARD:BASE_SIMPLE; let per=base; if(text) per+=TEXT_FEE; if(date) per+=DATE_FEE; const total=per; return {name,text,color:col,date,per,total}; }
+    function calculateWood(){ const text=woodText.value.trim(); const shape=woodShape.value.trim(); let per=WOOD_PRICE; if(text) per+=TEXT_FEE; // date not applicable here except global
+      const total=per; return {per,total,shape}; }
+    function updatePrice(){ if(flow3D.style.display==='block'){ const p=calculate3D(); priceBox.textContent=`Apskaičiuojama kaina: €${p.total.toFixed(2)}`; } else if(flowWood.style.display==='block'){ const p=calculateWood(); priceBox.textContent=`Apskaičiuojama kaina: €${p.total.toFixed(2)}`; } else priceBox.textContent='Apskaičiuojama kaina: €0.00'; }
 
-    // helpers
-    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+    // autosave/auto update preview
+    [obj3d,text3d,color3d,woodText,woodShape,date3dInput].forEach(el=>{ if(!el) return; el.addEventListener('input', ()=>{ drawPreview(); updatePrice(); }); el.addEventListener('change', ()=>{ drawPreview(); updatePrice(); }); });
 
-    // init
-    window.addEventListener('load', ()=>{ show('step1'); if(!objectInput.value) objectInput.value='Eifelio bokštas'; draw(); updatePrice(); });
+    // initial default
+    window.addEventListener('load', ()=>{ obj3d.value='Eifelio bokštas'; woodText.value=''; woodShape.value='Medinis pakabukas'; drawPreview(); updatePrice(); });
 
-    // better overscroll/stretch
-    (function(){ let startY=0,pulling=false,anim=null; function setStretch(s){ glass.style.transform = `translateY(0) scaleY(${s})`; } function release(){ const from = parseFloat(getComputedStyle(glass).transform.split(',')[5])||1; const dur=420; const t0=performance.now(); if(anim) cancelAnimationFrame(anim); function step(t){ const p=Math.min(1,(t-t0)/dur); const eased=1 - Math.pow(1-p,3); const val = from + (1-from)*eased; setStretch(val); if(p<1) anim=requestAnimationFrame(step); else anim=null; } anim=requestAnimationFrame(step);} window.addEventListener('touchstart',e=>{ if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true;} },{passive:true}); window.addEventListener('touchmove',e=>{ if(!pulling) return; const d=e.touches[0].clientY-startY; if(d>0){ const s = 1 + Math.min(0.30, Math.log10(1+d)*0.08); setStretch(s);} },{passive:true}); window.addEventListener('touchend',()=>{ if(pulling) release(); pulling=false; }); window.addEventListener('wheel',e=>{ if(window.scrollY<=0 && e.deltaY<0){ setStretch(1.06); setTimeout(()=>release(),140); } },{passive:true}); let dragging=false; window.addEventListener('mousedown',e=>{ if(window.scrollY<=0 && e.button===0){ dragging=true; startY=e.clientY; } }); window.addEventListener('mousemove',e=>{ if(!dragging) return; const d=e.clientY-startY; if(d>0){ const s = 1 + Math.min(0.30, Math.log10(1+d)*0.08); setStretch(s);} }); window.addEventListener('mouseup',()=>{ if(dragging) release(); dragging=false; }); })();
+    // improved overscroll/stretch
+    (function(){ let startY=0,pulling=false,anim=null; function setStretch(s){ glass.style.transform=`translateY(0) scaleY(${s})`; } function release(){ const dur=420; const t0=performance.now(); const from = parseFloat(getComputedStyle(glass).transform.split(',')[5])||1; if(anim) cancelAnimationFrame(anim); function step(t){ const p=Math.min(1,(t-t0)/dur); const eased=1-Math.pow(1-p,3); const val=from+(1-from)*eased; setStretch(val); if(p<1) anim=requestAnimationFrame(step); else anim=null; } anim=requestAnimationFrame(step);} window.addEventListener('touchstart',e=>{ if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true; } },{passive:true}); window.addEventListener('touchmove',e=>{ if(!pulling) return; const d=e.touches[0].clientY-startY; if(d>0){ const s = 1 + Math.min(0.30, Math.log10(1+d)*0.08); setStretch(s); } },{passive:true}); window.addEventListener('touchend',()=>{ if(pulling) release(); pulling=false; }); window.addEventListener('wheel',e=>{ if(window.scrollY<=0 && e.deltaY<0){ setStretch(1.06); setTimeout(()=>release(),140); } },{passive:true}); let dragging=false; window.addEventListener('mousedown',e=>{ if(window.scrollY<=0 && e.button===0){ dragging=true; startY=e.clientY; } }); window.addEventListener('mousemove',e=>{ if(!dragging) return; const d=e.clientY-startY; if(d>0){ const s = 1 + Math.min(0.30, Math.log10(1+d)*0.08); setStretch(s); } }); window.addEventListener('mouseup',()=>{ if(dragging) release(); dragging=false; }); })();
 
+    // small escapeHtml helper
+    function escapeHtml(s){ if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
   </script>
 </body>
 </html>
