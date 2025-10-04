@@ -7,48 +7,52 @@
 <style>
 * {margin:0;padding:0;box-sizing:border-box;}
 body {
-  font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background: radial-gradient(circle at top center, #b5efc1, #dcedc1, #a8e6cf);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  overflow-x:hidden;
-  color:#111;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: radial-gradient(circle at top center, #b9fbc0, #a3d5ff);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #111;
+  overflow-x: hidden;
 }
+
 .glass {
-  background:rgba(255,255,255,0.3);
-  border-radius:24px;
-  padding:30px 40px;
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  border:1px solid rgba(255,255,255,0.3);
-  box-shadow:0 8px 40px rgba(0,0,0,0.25), inset 0 0 40px rgba(255,255,255,0.05);
-  width:90%;
-  max-width:850px;
-  display:flex;
-  flex-direction:column;
-  gap:20px;
-  text-align:center;
-  animation:fadeIn 0.9s ease forwards;
+  margin-top: 4vh;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 28px;
+  padding: 30px 40px;
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.3);
+  box-shadow:
+    0 12px 40px rgba(0,0,0,0.25),
+    inset 0 0 40px rgba(255,255,255,0.05),
+    0 0 80px rgba(255,255,255,0.2);
+  width: 90%;
+  max-width: 850px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+  transform: translateY(20px);
+  transition: all 0.6s ease;
+  animation: floaty 5s ease-in-out infinite;
 }
-@keyframes fadeIn {
-  from {opacity:0; transform:translateY(30px);}
-  to {opacity:1; transform:translateY(0);}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
 }
+
 h1 {
-  font-size:2.5rem;
-  font-weight:700;
-  background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #007aff, #00c6ff, #7b61ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
-h2.slogan {
-  font-size:1.2rem;
-  font-weight:500;
-  color:rgba(20,20,20,0.75);
-}
+h2.slogan { font-size: 1.2rem; color: rgba(20,20,20,0.75); }
+
 .btn-link {
   display:inline-block;
   margin-top:10px;
@@ -59,8 +63,10 @@ h2.slogan {
   text-decoration:none;
   font-weight:600;
 }
+
 .step {display:none;flex-direction:column;gap:15px;}
 .step.active {display:flex;}
+
 input, select, button {
   padding:12px 16px;
   border-radius:12px;
@@ -71,17 +77,17 @@ input, select, button {
 }
 button {
   cursor:pointer;
-  background:linear-gradient(90deg,#9ecbff,#7ec8ff,#a6d0ff);
+  background:linear-gradient(90deg,#7bafff,#a3d5ff);
   color:#fff;
   font-weight:600;
   transition:transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow:0 4px 12px rgba(0,0,0,0.15);
 }
 button:hover {
   transform:scale(1.05);
-  box-shadow:0 6px 18px rgba(0,0,0,0.25);
+  box-shadow:0 0 20px rgba(123, 175, 255, 0.5);
 }
 .btn-row {display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
+
 .prototype-message {
   background:rgba(255,255,255,0.3);
   border-radius:18px;
@@ -92,6 +98,7 @@ button:hover {
   font-size:1rem;
   color:rgba(0,0,0,0.85);
 }
+
 footer {font-size:0.95rem;opacity:0.85;padding:25px;text-align:center;}
 footer p {margin:5px 0;}
 </style>
@@ -100,19 +107,21 @@ footer p {margin:5px 0;}
 <div class="glass" id="glassBox">
   <h1>Pasaulinukai Lietuva</h1>
   <h2 class="slogan">Pasaulis ant tavo raktų</h2>
-  
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" target="_blank" class="btn-link">Užpildyti per Google Forms</a>
+
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog"
+     target="_blank" class="btn-link">Užpildyti per Google Forms</a>
+
   <p>Arba tęskite užsakymą svetainėje:</p>
 
   <!-- Step 1 -->
   <div class="step active" id="step1">
-    <label for="type">Pasirinkite gamybos tipą:</label>
+    <label for="type">Pasirinkite tipą:</label>
     <select id="type">
       <option value="3d">3D spausdinimas (€12)</option>
       <option value="wood">Medžio graviravimas (€4.99)</option>
     </select>
-    <label for="object">Įveskite objektą arba gyvūną:</label>
-    <input type="text" id="object" placeholder="Pvz.: Eifelio bokštas">
+    <label for="object">Įveskite objektą:</label>
+    <input type="text" id="object" placeholder="Įveskite figūrą ar gyvūną">
     <div class="btn-row">
       <button onclick="validateAndNext(2)">Toliau</button>
     </div>
@@ -120,7 +129,7 @@ footer p {margin:5px 0;}
 
   <!-- Step 2 -->
   <div class="step" id="step2">
-    <label for="customText">Įveskite tekstą (nebūtina, max 8 raidės):</label>
+    <label for="customText">Įveskite tekstą (max 8 raidės):</label>
     <input type="text" id="customText" maxlength="8" placeholder="Tekstas">
     <div class="btn-row">
       <button onclick="prevStep(1)">Atgal</button>
@@ -142,49 +151,45 @@ footer p {margin:5px 0;}
     </select>
     <div class="btn-row">
       <button onclick="prevStep(2)">Atgal</button>
-      <button onclick="nextStep(4)">Toliau</button>
+      <button onclick="nextStep(4)">Baigti</button>
     </div>
   </div>
 
-  <!-- Step 4 (Summary + Form) -->
+  <!-- Step 4 (Summary) -->
   <div class="step" id="step4">
     <h3>Užsakymo santrauka</h3>
     <p id="summaryText"></p>
-    <form action="https://formspree.io/f/mgvnyvbv" method="POST" id="orderForm">
+    <form id="orderForm" action="https://formspree.io/f/mgvnyvbv" method="POST">
+      <input type="hidden" name="type" id="formType">
       <input type="hidden" name="object" id="formObject">
       <input type="hidden" name="customText" id="formText">
       <input type="hidden" name="color" id="formColor">
-      <input type="hidden" name="type" id="formType">
       <input type="hidden" name="price" id="formPrice">
-      
       <label>Pilnas vardas:</label>
       <input type="text" name="fullname" required>
-
       <label>El. paštas:</label>
       <input type="email" name="email" required>
-
       <label>Telefono numeris:</label>
       <input type="tel" name="phone" required>
-
       <label>Pageidaujamas kontaktas:</label>
       <select name="contactMethod" required>
         <option value="email">El. paštas</option>
         <option value="sms">SMS</option>
       </select>
-
       <button type="submit">Siųsti užklausą</button>
     </form>
     <div class="btn-row">
-      <button onclick="prevStep(3)">Atgal</button>
-      <button onclick="resetOrder()">Naujas užsakymas</button>
+      <button onclick="resetOrder()">Pradėti naują</button>
     </div>
   </div>
 
-  <div class="prototype-message">Ši svetainė yra prototipas. Užsakymas bus patvirtintas susisiekus su jumis.</div>
+  <div class="prototype-message">
+    Ši svetainė yra tik prototipas ir dar neveikia pilnai. Prašome nesugaišti savo laiko bandant pateikti užsakymą.
+  </div>
 </div>
 
 <footer>
-  <p>All rights reserved © Pasaulinukai 2025</p>
+  <p>All rights reserved Pasaulinukai 2025</p>
 </footer>
 
 <script>
@@ -219,17 +224,10 @@ function calculatePrice() {
   order.price = (order.type === "3d") ? 12.00 : 4.99;
 }
 
-function nextStepAndShowSummary() {
-  calculatePrice();
-  showSummary();
-  nextStep(4);
-}
-
 function showSummary() {
   order.text = document.getElementById("customText").value.trim();
   order.color = document.getElementById("color").value;
   calculatePrice();
-
   const summary = `
   <strong>Tipas:</strong> ${order.type === "3d" ? "3D spausdinimas" : "Medžio graviravimas"}<br>
   <strong>Objektas:</strong> ${order.object}<br>
@@ -239,6 +237,7 @@ function showSummary() {
   `;
   document.getElementById("summaryText").innerHTML = summary;
 
+  // Fill hidden fields for Formspree
   document.getElementById("formType").value = order.type;
   document.getElementById("formObject").value = order.object;
   document.getElementById("formText").value = order.text;
