@@ -3,43 +3,92 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pasaulinukai — 3D arba Medžio graviravimas</title>
+  <title>Pasaulinukai — 3D ir Medžio užsakymai</title>
   <style>
+    /* Reset */
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
-    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial; background:radial-gradient(circle at top center,#a8e6cf,#dcedc1,#bbdefb); color:#111;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:4vh 3vw}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+      background: radial-gradient(circle at 10% 10%, #ddf7e8 0%, #dcedc1 40%, #cfeee0 100%);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      min-height:100vh;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:5vh 3vw;
+      color:#063048;
+    }
 
-    /* Liquid glass card */
-    .glass{width:100%;max-width:980px;background:linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.06));border-radius:24px;padding:28px;backdrop-filter:blur(22px) saturate(200%);-webkit-backdrop-filter:blur(22px) saturate(200%);border:1px solid rgba(255,255,255,0.36);box-shadow:0 20px 50px rgba(6,18,36,0.12), inset 0 6px 40px rgba(255,255,255,0.06);transform-origin:top center;transform:translateY(18px);opacity:0;transition:all .6s cubic-bezier(.22,1,.36,1)}
-    .glass.loaded{transform:translateY(0);opacity:1}
+    /* Card (liquid glass) */
+    .card{
+      width:100%;max-width:980px;border-radius:20px;padding:28px;position:relative;overflow:visible;
+      background:linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06));
+      border:1px solid rgba(255,255,255,0.5);
+      box-shadow:0 20px 60px rgba(6,18,36,0.12), inset 0 8px 40px rgba(255,255,255,0.08);
+      backdrop-filter: blur(18px) saturate(180%);
+    }
 
-    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
-    h1{font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:800;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .slogan{font-size:1rem;color:rgba(10,10,10,0.75)}
-    .google-link{display:inline-block;padding:8px 12px;border-radius:12px;background:#007aff;color:#fff;text-decoration:none;font-weight:700}
+    /* Visual overlay (shimmer) - non-blocking */
+    .card .shimmer{
+      pointer-events: none;
+      position:absolute;left:-40%;top:-60%;width:180%;height:160%;
+      background: linear-gradient(120deg,
+        rgba(255,255,255,0.22) 0%,
+        rgba(255,255,255,0.06) 35%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(255,255,255,0) 70%);
+      transform:rotate(-12deg);
+      filter: blur(16px);
+      opacity:0.95;
+      z-index:2;
+      animation:shimmer 8s linear infinite;
+    }
+    @keyframes shimmer{0%{transform:translateX(-40%) rotate(-12deg)}100%{transform:translateX(40%) rotate(-12deg)}}
 
-    .layout{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    /* Inner soft glow rings */
+    .glow{pointer-events:none;position:absolute;border-radius:50%;filter:blur(10px);opacity:0.9;z-index:1}
+    .glow.large{right:-8%;top:-10%;width:280px;height:280px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.18), rgba(255,255,255,0.02) 40%, transparent 60%)}
+    .glow.small{right:10%;top:60%;width:120px;height:120px;background:radial-gradient(circle at 30% 30%, rgba(255,255,255,0.12), transparent 60%)}
+
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;position:relative;z-index:3}
+    h1{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;background:linear-gradient(90deg,#0f6fff,#66b3ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .slogan{font-size:0.95rem;color:rgba(7,25,45,0.85)}
+    .google-link{display:inline-block;padding:8px 12px;border-radius:12px;background:#66b3ff;color:#06325b;text-decoration:none;font-weight:700}
+
+    .layout{display:grid;grid-template-columns:1fr 340px;gap:18px;position:relative;z-index:3}
     @media(max-width:980px){.layout{grid-template-columns:1fr}}
 
     label{display:block;font-weight:700;margin:8px 0 6px}
-    input[type=text],select,input[type=date],input[type=email],input[type=tel]{width:100%;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.95)}
-    .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
-    button{padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);color:#fff;font-weight:700;cursor:pointer}
-    button.muted{background:rgba(255,255,255,0.9);color:#111}
+    input[type=text],select,input[type=date],input[type=email],input[type=tel]{width:100%;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.98);font-size:1rem}
 
-    .note{font-size:.92rem;color:rgba(0,0,0,0.65);background:rgba(255,255,255,0.28);padding:10px;border-radius:10px;margin-top:12px}
+    /* Pastel-blue buttons (solid) */
+    .btn{background:#9fc9ff;border:none;padding:10px 14px;border-radius:12px;color:#03325a;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(16,82,138,0.08);transition:transform .12s ease, box-shadow .12s ease}
+    .btn:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(16,82,138,0.12)}
+    .btn.secondary{background:#eaf6ff;color:#06325b}
 
-    aside{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.04));display:flex;flex-direction:column;gap:12px;align-items:stretch}
-    .priceBox{font-weight:900;font-size:1.15rem;color:#0b6;padding:10px;border-radius:10px;text-align:center;background:rgba(255,255,255,0.28)}
+    .btn-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .note{font-size:.92rem;color:rgba(3,50,90,0.75);background:rgba(255,255,255,0.6);padding:10px;border-radius:10px;margin-top:12px}
 
-    .liquid-highlight{position:relative}
-    .liquid-highlight::after{content:'';position:absolute;left:-10%;right:-10%;top:-20%;height:60%;background:radial-gradient(600px 120px at 20% 10%, rgba(255,255,255,0.35), transparent), linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));transform:rotate(-6deg);border-radius:30px;pointer-events:none}
+    .priceBox{font-weight:900;font-size:1.15rem;color:#024d21;padding:12px;border-radius:10px;text-align:center;background:linear-gradient(180deg,rgba(255,255,255,0.9),rgba(250,255,250,0.9));box-shadow:inset 0 2px 6px rgba(0,0,0,0.02)}
+
+    .pulse{animation:pulse 2.8s ease-in-out infinite}
+    @keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.01)}100%{transform:scale(1)}}
 
     footer{margin-top:14px;text-align:center;font-size:.95rem;color:rgba(0,0,0,0.55)}
+
+    /* ensure content above shimmer for clicks */
+    .card > * { position: relative; z-index: 3; }
   </style>
 </head>
 <body>
-  <div class="glass" id="app"> 
+  <div class="card" id="card">
+    <!-- visual layers (non-blocking) -->
+    <div class="shimmer" aria-hidden="true"></div>
+    <div class="glow large" aria-hidden="true"></div>
+    <div class="glow small" aria-hidden="true"></div>
+
     <header>
       <div>
         <h1>Pasaulinukai Lietuva</h1>
@@ -52,212 +101,306 @@
 
     <div class="layout">
       <main>
-        <!-- Start screen: choose order type -->
-        <section id="startScreen">
+        <!-- Start -->
+        <section id="start">
           <label>Ką norite užsisakyti?</label>
-          <div class="btn-row">
-            <button id="btn3d">3D spausdinimas — €12.00</button>
-            <button id="btnWood" class="muted">Medžio graviravimas — €4.99</button>
+          <div class="btn-row" style="margin-bottom:10px">
+            <button class="btn" id="start3d">3D spausdinimas — €12.00</button>
+            <button class="btn secondary" id="startWood">Medžio graviravimas — €4.99</button>
           </div>
+          <div class="note">Pasirinkite 3D čia (pilna sklandi eiga). Medis atskirai — paprastesnė forma.</div>
         </section>
 
-        <!-- 3D flow (liquid glass styled) -->
-        <section id="flow3d" style="display:none">
-          <div class="liquid-highlight" id="stepA">
-            <label for="obj">1) Pasirinkite objektą</label>
-            <select id="obj">
-              <option value="">-- Pasirinkite --</option>
-              <option value="Eifelio bokštas">Eifelio bokštas</option>
-              <option value="Burj Khalifa">Burj Khalifa</option>
-              <option value="Širdelė">Širdelė</option>
-              <option value="Apskritimas">Apskritimas</option>
-              <option value="Kvadratas">Kvadratas</option>
-            </select>
-            <div class="btn-row"><button id="toText">Toliau</button></div>
+        <!-- 3D flow -->
+        <section id="flow" style="display:none; margin-top:12px">
+          <!-- Step 1: object -->
+          <div id="step1">
+            <label for="objectInput">1) Įveskite norimą objektą (pvz. Eifelio bokštas)</label>
+            <input id="objectInput" type="text" placeholder="Įveskite objektą...">
+            <div style="margin-top:10px" class="btn-row">
+              <button class="btn" id="toStep2">Toliau</button>
+            </div>
           </div>
 
-          <div id="stepB" style="display:none;margin-top:12px" class="liquid-highlight">
-            <label for="text3d">2) Tekstas (max 8 raidės)</label>
-            <input id="text3d" type="text" maxlength="8" placeholder="Tekstas (nebūtina)">
-            <div class="btn-row"><button class="muted" id="backToA">Atgal</button><button id="toColor">Toliau</button></div>
+          <!-- Step 2: text -->
+          <div id="step2" style="display:none; margin-top:12px">
+            <label for="textInput">2) Tekstas ant pakabuko (max 8 raidės, nebūtina)</label>
+            <input id="textInput" type="text" maxlength="8" placeholder="Tekstas (nebūtina)">
+            <div style="margin-top:10px" class="btn-row">
+              <button class="btn secondary" id="backTo1">Atgal</button>
+              <button class="btn" id="toStep3">Toliau</button>
+            </div>
           </div>
 
-          <div id="stepC" style="display:none;margin-top:12px" class="liquid-highlight">
-            <label for="color3d">3) Spalva</label>
-            <select id="color3d">
+          <!-- Step 3: color -->
+          <div id="step3" style="display:none; margin-top:12px">
+            <label for="colorInput">3) Spalva</label>
+            <select id="colorInput">
               <option value="pilka">Pilka (numatyta)</option>
               <option value="raudona">Raudona</option>
               <option value="melyna">Mėlyna</option>
               <option value="zalia">Žalia</option>
               <option value="juoda">Juoda</option>
               <option value="balta">Balta</option>
+              <option value="artimiausia">Artimiausia pasirinktam objektui</option>
             </select>
-            <div class="btn-row"><button class="muted" id="backToB">Atgal</button><button id="toDate">Toliau</button></div>
+            <div style="margin-top:10px" class="btn-row">
+              <button class="btn secondary" id="backTo2">Atgal</button>
+              <button class="btn" id="toStep4">Toliau</button>
+            </div>
           </div>
 
-          <div id="stepD" style="display:none;margin-top:12px" class="liquid-highlight">
-            <label for="date3d">4) Data (nebūtina)</label>
-            <input id="date3d" type="date">
-            <div class="btn-row"><button class="muted" id="backToC">Atgal</button><button id="finish3d">Peržiūrėti santrauką</button></div>
+          <!-- Step 4: contact method -->
+          <div id="step4" style="display:none; margin-top:12px">
+            <label>4) Pageidaujamas kontaktavimo būdas</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <label style="display:flex;align-items:center;gap:8px"><input type="radio" name="contactMethod" value="email" checked> El. paštas</label>
+              <label style="display:flex;align-items:center;gap:8px"><input type="radio" name="contactMethod" value="sms"> SMS</label>
+            </div>
+            <div style="margin-top:10px" class="btn-row">
+              <button class="btn secondary" id="backTo3">Atgal</button>
+              <button class="btn" id="toSummary">Peržiūrėti santrauką</button>
+            </div>
           </div>
         </section>
 
-        <!-- Wood flow (simple) -->
-        <section id="flowWood" style="display:none">
-          <label for="woodText">Tekstas graviravimui (max 12)</label>
-          <input id="woodText" type="text" maxlength="12" placeholder="Tekstas ant medžio (nebūtina)">
-          <label for="woodNotes">Forma / pastabos (nebūtina)</label>
-          <input id="woodNotes" type="text" placeholder="Pvz. apvalus pakabukas">
+        <!-- Wood flow -->
+        <section id="flowWood" style="display:none; margin-top:12px">
+          <label for="woodText">Tekstas graviravimui (nebūtina)</label>
+          <input id="woodText" type="text" maxlength="50" placeholder="Tekstas (nebūtina)">
+          <label for="woodContact" style="margin-top:8px">Kontaktas</label>
+          <select id="woodContact">
+            <option value="email">El. paštas</option>
+            <option value="sms">SMS</option>
+          </select>
           <div class="btn-row" style="margin-top:10px">
-            <button id="reviewWood">Peržiūrėti santrauką</button>
-            <button class="muted" id="cancelWood">Atšaukti</button>
+            <button class="btn" id="reviewWood">Peržiūrėti santrauką</button>
+            <button class="btn secondary" id="cancelWood">Atšaukti</button>
           </div>
         </section>
 
-        <!-- Summary (shared) -->
-        <section id="summary" style="display:none;margin-top:12px">
+        <!-- Summary -->
+        <section id="summary" style="display:none; margin-top:12px">
           <h3>Santrauka</h3>
-          <div id="summaryText" style="text-align:left;padding:12px;border-radius:12px;background:rgba(255,255,255,0.9);"></div>
+          <div id="summaryBox" style="text-align:left;padding:14px;border-radius:12px;background:rgba(255,255,255,0.98);color:#022a46"></div>
 
-          <form id="orderForm" action="https://formspree.io/f/mgvnyvbv" method="POST">
-            <input type="hidden" name="orderType" id="f_type">
+          <form id="formspree" action="https://formspree.io/f/mgvnyvbv" method="POST">
+            <input type="hidden" name="orderType" id="f_type" value="3D">
             <input type="hidden" name="object" id="f_object">
             <input type="hidden" name="text" id="f_text">
             <input type="hidden" name="color" id="f_color">
-            <input type="hidden" name="date" id="f_date">
+            <input type="hidden" name="contactMethod" id="f_contact">
             <input type="hidden" name="price" id="f_price">
 
-            <label>Vardas pavardė</label>
+            <label>Vardas ir pavardė</label>
             <input name="fullname" type="text" required>
             <label>El. paštas</label>
             <input name="email" type="email" required>
             <label>Telefono numeris</label>
             <input name="phone" type="tel" required>
 
-            <div class="btn-row" style="margin-top:12px">
-              <button type="submit">Siųsti užklausą</button>
-              <button type="button" class="muted" id="startAnother">Pradėti naują užsakymą</button>
+            <div style="margin-top:12px" class="btn-row">
+              <button class="btn" type="submit">Siųsti užklausą</button>
+              <button type="button" class="btn secondary" id="startOver">Pradėti iš naujo</button>
             </div>
           </form>
         </section>
-
-        <div class="note">Pastaba: kaina rodoma tik santraukoje. Siuntimas bus derinamas susisiekus.</div>
       </main>
 
       <aside>
-        <div class="priceBox" id="priceBox">
-          <!-- price displayed only in summary -->
-          Kaina bus parodyta santraukoje
-        </div>
+        <div class="priceBox pulse" id="priceBox">Kaina: €12.00 (bus patvirtinta santraukoje)</div>
+        <div class="note">Kaina fiksuota: 3D pakabukas – €12.00. Medis – €4.99. Siuntimas derinamas susisiekus.</div>
       </aside>
     </div>
   </div>
 
   <script>
     // Elements
-    const app = document.getElementById('app');
-
-    const startScreen = document.getElementById('startScreen');
-    const flow3d = document.getElementById('flow3d');
+    const start3d = document.getElementById('start3d');
+    const startWood = document.getElementById('startWood');
+    const startSection = document.getElementById('start');
+    const flow = document.getElementById('flow');
     const flowWood = document.getElementById('flowWood');
     const summary = document.getElementById('summary');
-    const summaryText = document.getElementById('summaryText');
-    const priceBox = document.getElementById('priceBox');
+    const summaryBox = document.getElementById('summaryBox');
 
-    const btn3d = document.getElementById('btn3d');
-    const btnWood = document.getElementById('btnWood');
+    // steps
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const step4 = document.getElementById('step4');
 
-    // 3D steps
-    const stepA = document.getElementById('stepA');
-    const stepB = document.getElementById('stepB');
-    const stepC = document.getElementById('stepC');
-    const stepD = document.getElementById('stepD');
+    // inputs
+    const objectInput = document.getElementById('objectInput');
+    const textInput = document.getElementById('textInput');
+    const colorInput = document.getElementById('colorInput');
 
-    const obj = document.getElementById('obj');
-    const text3d = document.getElementById('text3d');
-    const color3d = document.getElementById('color3d');
-    const date3d = document.getElementById('date3d');
-
-    // Wood elems
+    // wood inputs
     const woodText = document.getElementById('woodText');
-    const woodNotes = document.getElementById('woodNotes');
+    const woodContact = document.getElementById('woodContact');
 
-    // summary hidden inputs
+    // form hidden
     const f_type = document.getElementById('f_type');
     const f_object = document.getElementById('f_object');
     const f_text = document.getElementById('f_text');
     const f_color = document.getElementById('f_color');
-    const f_date = document.getElementById('f_date');
+    const f_contact = document.getElementById('f_contact');
     const f_price = document.getElementById('f_price');
 
-    // Buttons
-    document.getElementById('toText').addEventListener('click', ()=>{ if(!obj.value){ alert('Pasirinkite objektą'); return;} stepA.style.display='none'; stepB.style.display='block'; });
-    document.getElementById('backToA').addEventListener('click', ()=>{ stepB.style.display='none'; stepA.style.display='block'; });
-    document.getElementById('toColor').addEventListener('click', ()=>{ stepB.style.display='none'; stepC.style.display='block'; });
-    document.getElementById('backToB').addEventListener('click', ()=>{ stepC.style.display='none'; stepB.style.display='block'; });
-    document.getElementById('toDate').addEventListener('click', ()=>{ stepC.style.display='none'; stepD.style.display='block'; });
-    document.getElementById('backToC').addEventListener('click', ()=>{ stepD.style.display='none'; stepC.style.display='block'; });
-    document.getElementById('finish3d').addEventListener('click', ()=>{ showSummary('3d'); });
-
-    document.getElementById('reviewWood').addEventListener('click', ()=> showSummary('wood'));
-    document.getElementById('cancelWood').addEventListener('click', ()=>{ flowWood.style.display='none'; startScreen.style.display='block'; updatePricePlaceholder(); });
-
-    document.getElementById('startAnother').addEventListener('click', ()=>{ resetAll(); });
-
-    btn3d.addEventListener('click', ()=>{ startScreen.style.display='none'; flow3d.style.display='block'; stepA.style.display='block'; stepB.style.display='none'; stepC.style.display='none'; stepD.style.display='none'; updatePricePlaceholder(); });
-    btnWood.addEventListener('click', ()=>{ startScreen.style.display='none'; flowWood.style.display='block'; updatePricePlaceholder(); });
-
-    // Pricing: fixed
+    // price constants
     const PRICE_3D = 12.00;
     const PRICE_WOOD = 4.99;
-    const TEXT_FEE = 0.20; // only added to final? user said fixed price, but earlier included text fee — user requested fixed so remove extra fees
 
-    // Show summary and fill form inputs
-    function showSummary(type){
-      flow3d.style.display='none'; flowWood.style.display='none'; startScreen.style.display='none'; summary.style.display='block';
+    // Start 3D
+    start3d.addEventListener('click', () => {
+      startSection.style.display = 'none';
+      flow.style.display = 'block';
+      step1.style.display = 'block';
+      step2.style.display = 'none';
+      step3.style.display = 'none';
+      step4.style.display = 'none';
+      document.getElementById('priceBox').textContent = 'Kaina: €12.00 (bus patvirtinta santraukoje)';
+    });
+
+    // Start Wood
+    startWood.addEventListener('click', () => {
+      startSection.style.display = 'none';
+      flowWood.style.display = 'block';
+      document.getElementById('priceBox').textContent = 'Kaina: €4.99 (bus patvirtinta santraukoje)';
+    });
+
+    // 3D navigation
+    document.getElementById('toStep2').addEventListener('click', () => {
+      if (!objectInput.value.trim()) { objectInput.focus(); return; }
+      step1.style.display = 'none';
+      step2.style.display = 'block';
+    });
+    document.getElementById('backTo1').addEventListener('click', () => {
+      step2.style.display = 'none'; step1.style.display = 'block';
+    });
+
+    document.getElementById('toStep3').addEventListener('click', () => {
+      step2.style.display = 'none'; step3.style.display = 'block';
+    });
+    document.getElementById('backTo2').addEventListener('click', () => {
+      step3.style.display = 'none'; step2.style.display = 'block';
+    });
+
+    document.getElementById('toStep4').addEventListener('click', () => {
+      step3.style.display = 'none'; step4.style.display = 'block';
+    });
+    document.getElementById('backTo3').addEventListener('click', () => {
+      step4.style.display = 'none'; step3.style.display = 'block';
+    });
+
+    // To summary
+    document.getElementById('toSummary').addEventListener('click', () => {
+      buildSummary3D();
+    });
+
+    // Wood review
+    document.getElementById('reviewWood').addEventListener('click', () => {
+      buildSummaryWood();
+    });
+    document.getElementById('cancelWood').addEventListener('click', () => {
+      flowWood.style.display = 'none';
+      startSection.style.display = 'block';
+      document.getElementById('priceBox').textContent = 'Kaina: €12.00 (bus patvirtinta santraukoje)';
+    });
+
+    // Start over
+    document.getElementById('startOver').addEventListener('click', resetAll);
+
+    function buildSummary3D(){
+      const obj = objectInput.value.trim();
+      const txt = textInput.value.trim();
+      const col = colorInput.value;
+      const contact = document.querySelector('input[name="contactMethod"]:checked')?.value || 'email';
+
+      // fill summary
       let html = '';
-      let price = 0;
-      if(type==='3d'){
-        f_type.value = '3D';
-        f_object.value = obj.value;
-        f_text.value = text3d.value.trim();
-        f_color.value = color3d.value;
-        f_date.value = date3d.value || '';
-        price = PRICE_3D; // fixed
-        html += `<strong>Tipas:</strong> 3D spausdinimas<br>`;
-        html += `<strong>Objektas:</strong> ${escapeHtml(obj.value)}<br>`;
-        html += `<strong>Tekstas:</strong> ${escapeHtml(text3d.value) || '—'}<br>`;
-        html += `<strong>Spalva:</strong> ${escapeHtml(color3d.value)}<br>`;
-        html += `<strong>Data:</strong> ${f_date.value || '—'}<br>`;
-      } else if(type==='wood'){
-        f_type.value = 'WOOD';
-        f_object.value = woodNotes.value.trim() || 'Medžio graviravimas';
-        f_text.value = woodText.value.trim();
-        f_color.value = '';
-        f_date.value = '';
-        price = PRICE_WOOD;
-        html += `<strong>Tipas:</strong> Medžio graviravimas<br>`;
-        html += `<strong>Tekstas:</strong> ${escapeHtml(woodText.value) || '—'}<br>`;
-        html += `<strong>Forma / pastabos:</strong> ${escapeHtml(woodNotes.value) || '—'}<br>`;
-      }
-      html += `<hr><strong>Kaina:</strong> €${price.toFixed(2)}`;
-      summaryText.innerHTML = html;
-      f_price.value = price.toFixed(2);
-      priceBox.textContent = `Galutinė kaina: €${price.toFixed(2)}`;
-      // scroll to summary smoothly
-      summary.scrollIntoView({behavior:'smooth'});
+      html += `<strong>Tipas:</strong> 3D spausdinimas<br>`;
+      html += `<strong>Objektas:</strong> ${escapeHtml(obj) || '—'}<br>`;
+      html += `<strong>Tekstas:</strong> ${escapeHtml(txt) || '—'}<br>`;
+      html += `<strong>Spalva:</strong> ${escapeHtml(col)}<br>`;
+      html += `<strong>Kontaktas:</strong> ${escapeHtml(contact)}<br>`;
+      html += `<hr><strong>Bendra kaina:</strong> €${PRICE_3D.toFixed(2)}`;
+
+      summaryBox.innerHTML = html;
+
+      // hidden inputs
+      f_type.value = '3D';
+      f_object.value = obj;
+      f_text.value = txt;
+      f_color.value = col;
+      f_contact.value = contact;
+      f_price.value = PRICE_3D.toFixed(2);
+
+      // switch view
+      flow.style.display = 'none';
+      summary.style.display = 'block';
+      window.scrollTo({top:0,behavior:'smooth'});
     }
 
-    function updatePricePlaceholder(){ priceBox.textContent = 'Kaina bus parodyta santraukoje'; }
+    function buildSummaryWood(){
+      const txt = woodText.value.trim();
+      const contact = woodContact.value;
 
-    // reset to start
-    function resetAll(){ summary.style.display='none'; flow3d.style.display='none'; flowWood.style.display='none'; startScreen.style.display='block'; obj.value=''; text3d.value=''; color3d.value='pilka'; date3d.value=''; woodText.value=''; woodNotes.value=''; f_type.value=''; f_object.value=''; f_text.value=''; f_color.value=''; f_date.value=''; f_price.value=''; updatePricePlaceholder(); }
+      let html = '';
+      html += `<strong>Tipas:</strong> Medžio graviravimas<br>`;
+      html += `<strong>Tekstas:</strong> ${escapeHtml(txt) || '—'}<br>`;
+      html += `<strong>Kontaktas:</strong> ${escapeHtml(contact)}<br>`;
+      html += `<hr><strong>Bendra kaina:</strong> €${PRICE_WOOD.toFixed(2)}`;
+
+      summaryBox.innerHTML = html;
+
+      f_type.value = 'WOOD';
+      f_object.value = 'Medžio graviravimas';
+      f_text.value = txt;
+      f_color.value = '';
+      f_contact.value = contact;
+      f_price.value = PRICE_WOOD.toFixed(2);
+
+      flowWood.style.display = 'none';
+      summary.style.display = 'block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function resetAll(){
+      // fields
+      objectInput.value = '';
+      textInput.value = '';
+      colorInput.value = 'pilka';
+      document.querySelector('input[name="contactMethod"][value="email"]').checked = true;
+      woodText.value = '';
+      woodContact.value = 'email';
+      // views
+      summary.style.display = 'none';
+      flow.style.display = 'none';
+      flowWood.style.display = 'none';
+      startSection.style.display = 'block';
+      document.getElementById('priceBox').textContent = 'Kaina: €12.00 (bus patvirtinta santraukoje)';
+    }
 
     function escapeHtml(s){ if(!s) return ''; return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
 
-    // Entrance animation & overscroll stretch
-    window.addEventListener('load', ()=>{ app.classList.add('loaded'); updatePricePlaceholder(); });
-    (function(){ const el = document.querySelector('.glass'); let startY=0,pulling=false,anim=null; function setStretch(scale){ el.style.transform = `translateY(0) scaleY(${scale})`; } function release(){ const from = parseFloat(getComputedStyle(el).transform.split(',')[5])||1; const dur=420; const t0=performance.now(); if(anim) cancelAnimationFrame(anim); function step(t){ const p=Math.min(1,(t-t0)/dur); const eased=1-Math.pow(1-p,3); const val = from + (1-from)*eased; setStretch(val); if(p<1) anim=requestAnimationFrame(step); else anim=null; } anim=requestAnimationFrame(step);} window.addEventListener('touchstart',e=>{ if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true; } },{passive:true}); window.addEventListener('touchmove',e=>{ if(!pulling) return; const d=e.touches[0].clientY - startY; if(d>0){ const s = 1 + Math.min(0.3, Math.log10(1+d)*0.08); setStretch(s); } },{passive:true}); window.addEventListener('touchend',()=>{ if(pulling) release(); pulling=false; }); window.addEventListener('wheel', e=>{ if(window.scrollY<=0 && e.deltaY<0){ setStretch(1.06); setTimeout(()=>release(),140); } },{passive:true}); })();
+    // Entrance pulse removed quickly so clickable immediately
+    window.addEventListener('load', ()=>{ const card = document.getElementById('card'); card.classList.add('pulse'); setTimeout(()=>card.classList.remove('pulse'),600); });
+
+    /* Overscroll/stretch (non-blocking) */
+    (function(){
+      const el = document.getElementById('card');
+      let startY=0,pulling=false,anim=null;
+      function setStretch(s){ el.style.transform = `translateY(0) scaleY(${s})`; }
+      function release(){ const dur=300; const t0=performance.now(); const from = parseFloat(getComputedStyle(el).transform.split(',')[5])||1; if(anim) cancelAnimationFrame(anim);
+        function step(t){ const p=Math.min(1,(t-t0)/dur); const eased=1-Math.pow(1-p,3); const val = from + (1-from)*eased; setStretch(val); if(p<1) anim=requestAnimationFrame(step); else anim=null; }
+        anim=requestAnimationFrame(step);
+      }
+      window.addEventListener('touchstart', e=>{ if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true; } },{passive:true});
+      window.addEventListener('touchmove', e=>{ if(!pulling) return; const d=e.touches[0].clientY-startY; if(d>0){ const s = 1 + Math.min(0.28, Math.log10(1+d)*0.08); setStretch(s); } },{passive:true});
+      window.addEventListener('touchend', ()=>{ if(pulling) release(); pulling=false; });
+      window.addEventListener('wheel', e=>{ if(window.scrollY<=0 && e.deltaY<0){ setStretch(1.06); setTimeout(()=>release(),120); } },{passive:true});
+    })();
   </script>
 </body>
 </html>
