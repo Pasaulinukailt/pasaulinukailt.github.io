@@ -1,565 +1,323 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pasaulinukai Lietuva</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pasaulinukai Lietuva — Prototipas</title>
   <style>
-    *{box-sizing:border-box;margin:0;padding:0}
+    * {margin:0;padding:0;box-sizing:border-box}
     html,body{height:100%}
-    body{
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(circle at top center,#a8e6cf,#dcedc1,#bbdefb);
-      color:#111;
-      min-height:100vh;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
-      padding:4vh 3vw;
-    }
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;background:radial-gradient(circle at top center,#a8e6cf,#dcedc1,#bbdefb);display:flex;align-items:flex-start;justify-content:center;padding:4vh 3vw;color:#111}
 
-    /* Glass card */
-    .glass{
-      width:100%;
-      max-width:980px;
-      border-radius:24px;
-      padding:26px;
-      background:rgba(255,255,255,0.25);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border:1px solid rgba(255,255,255,0.32);
-      box-shadow:0 18px 50px rgba(8,12,20,0.12), inset 0 0 30px rgba(255,255,255,0.04);
-      transform-origin:top center;
-      transform: translateY(30px) scaleY(1);
-      opacity:0;
-      transition: all 0.7s cubic-bezier(.22,1,.36,1);
-      display:grid;
-      grid-template-columns: 1fr 360px;
-      gap:18px;
-    }
+    .glass{width:100%;max-width:980px;background:rgba(255,255,255,0.25);border-radius:24px;padding:28px;backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,0.3);box-shadow:0 18px 50px rgba(8,12,20,0.12),inset 0 0 30px rgba(255,255,255,0.04);transform-origin:top center;transform:translateY(20px) scaleY(1.02);opacity:0;transition:all .6s cubic-bezier(.22,1,.36,1)}
     .glass.loaded{transform:translateY(0) scaleY(1);opacity:1}
 
-    @media (max-width:980px){ .glass{grid-template-columns:1fr} }
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+    h1{font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:800;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,#ffb86b,#ff7aa2);color:white;font-weight:700}
+    h2.slogan{font-size:1rem;color:rgba(10,10,10,0.75);margin-top:6px}
 
-    .header{
-      grid-column:1/-1;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-    }
-    h1{
-      font-size:clamp(1.6rem,2.6vw,2.4rem);
-      font-weight:800;
-      background: linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
-      -webkit-background-clip:text;
-      -webkit-text-fill-color:transparent;
-    }
-    .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,#ffb86b,#ff7aa2);color:#fff;font-weight:700;font-size:0.85rem}
+    .layout{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    @media(max-width:980px){.layout{grid-template-columns:1fr}}
 
-    main{padding:4px}
-    label{display:block;font-weight:700;margin:8px 0 6px;color:rgba(10,10,10,0.88)}
-    input[type="text"], input[type="date"], select, input[type="email"], input[type="tel"]{
-      width:100%;padding:12px 14px;border-radius:12px;border:none;font-size:1rem;background:rgba(255,255,255,0.92)
-    }
-    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .col{flex:1;min-width:120px}
+    label{display:block;font-weight:700;margin:8px 0 6px}
+    input[type=text],select,input[type=date]{width:100%;padding:12px;border-radius:12px;border:none;background:rgba(255,255,255,0.92)}
+    .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    button{padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);color:#fff;font-weight:700;cursor:pointer}
+    button.muted{background:rgba(255,255,255,0.7);color:#111}
 
-    .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    button{
-      padding:10px 14px;border-radius:12px;border:none;background:linear-gradient(90deg,#007aff,#00c6ff,#7b61ff);
-      color:#fff;font-weight:700;cursor:pointer;transition:transform .14s ease,box-shadow .14s ease;
-    }
-    button:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,0.12)}
-    .muted{background:rgba(255,255,255,0.6);color:#111;padding:10px 12px;border-radius:12px}
+    .note{font-size:.92rem;color:rgba(0,0,0,0.65);background:rgba(255,255,255,0.28);padding:10px;border-radius:10px;margin-top:12px}
 
-    aside{
-      padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06));
-      display:flex;flex-direction:column;gap:12px;align-items:stretch;min-height:320px;
-    }
-
-    .preview{
-      background:rgba(255,255,255,0.3);
-      border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;min-height:220px;border:1px solid rgba(255,255,255,0.45)
-    }
-    .preview canvas{max-width:100%;height:auto;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:#fff}
-
-    .price{font-weight:900;font-size:1.2rem;color:#0b6;padding:10px;border-radius:12px;text-align:center;background:rgba(255,255,255,0.32)}
-
-    .note{font-size:0.92rem;color:rgba(0,0,0,0.65);background:rgba(255,255,255,0.28);padding:10px;border-radius:10px}
-    footer{grid-column:1/-1;text-align:center;padding-top:10px;font-size:0.95rem;color:rgba(0,0,0,0.55)}
+    aside{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.12),rgba(255,255,255,0.06));display:flex;flex-direction:column;gap:12px;align-items:stretch}
+    .preview{background:rgba(255,255,255,0.3);padding:12px;border-radius:12px;min-height:240px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.45)}
+    .preview canvas{max-width:100%;height:auto;border-radius:8px}
+    .price{font-weight:900;font-size:1.15rem;color:#0b6;padding:10px;border-radius:10px;text-align:center;background:rgba(255,255,255,0.32)}
+    footer{margin-top:12px;text-align:center;font-size:.9rem;color:rgba(0,0,0,0.55)}
   </style>
 </head>
 <body>
   <div class="glass" id="glass">
-    <div class="header">
+    <header>
       <div>
-        <h1>Pasaulinukai Lietuva <span style="font-size:0.7rem;margin-left:8px;color:#222;opacity:.9">— Pasaulis ant tavo raktų</span></h1>
+        <h1>Pasaulinukai Lietuva <span class="badge">NEW</span></h1>
+        <h2 class="slogan">Pasaulis ant tavo raktų</h2>
       </div>
       <div style="text-align:right">
-        <span class="badge">NEW</span>
-        <div style="height:8px"></div>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" class="muted" target="_blank" rel="noopener">Google Forms</a>
+        <a class="muted" href="https://docs.google.com/forms/d/e/1FAIpQLSeSXqhfAI4mGfqAsmqDxWZZ6PimNVjhN1tgeo_fBjUA6UMjjg/viewform?usp=dialog" target="_blank" rel="noopener">Google Forms</a>
       </div>
-    </div>
+    </header>
 
-    <main>
-      <!-- Original form layout preserved with added fields -->
-      <div class="field">
-        <label for="objectInput">Pasirinkite objektą:</label>
-        <input id="objectInput" type="text" placeholder="Įveskite figūrą (pvz. Eifelio bokštas)">
-        <div style="font-size:0.86rem;color:rgba(0,0,0,0.6);margin-top:6px">Tip: įveskite „Eifelio bokštas“, „Burj Khalifa“ arba panašiai — sistema atpažins sudėtingus modelius.</div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <label for="quantity">Kiekis</label>
-          <select id="quantity">
-            <option value="1">1 vnt.</option>
-            <option value="2">2 vnt.</option>
-            <option value="3">3 vnt.</option>
-            <option value="4">4 vnt.</option>
-            <option value="5">5 vnt.</option>
-          </select>
+    <div class="layout">
+      <main>
+        <!-- Keep original flow: step1 -> 2 -> 3 -> 4, with add-more option -->
+        <div class="step" id="step1">
+          <label for="object">Pasirinkite objektą:</label>
+          <input id="object" type="text" placeholder="Įveskite figūrą (pvz. Eifelio bokštas)">
+          <div class="btn-row">
+            <button id="toStep2">Toliau</button>
+          </div>
         </div>
-        <div class="col">
-          <label for="material">Medžiaga</label>
-          <select id="material">
-            <option value="plastikas">Plastikas (numatyta)</option>
-            <option value="metal">Metalas</option>
-            <option value="medis">Medis</option>
-          </select>
+
+        <div class="step" id="step2">
+          <label for="customText">Įveskite tekstą (max 8 raidės):</label>
+          <input id="customText" type="text" maxlength="8" placeholder="Tekstas">
+          <div class="btn-row">
+            <button class="muted" id="backTo1">Atgal</button>
+            <button id="toStep3">Toliau</button>
+            <button class="muted" id="skipText">Praleisti</button>
+          </div>
         </div>
-      </div>
 
-      <div class="field">
-        <label for="customText">Įveskite tekstą (max 8 raidės) — €0.20 (visam tekstui):</label>
-        <input id="customText" type="text" maxlength="8" placeholder="Tekstas (nebūtina)">
-      </div>
-
-      <div class="row" style="align-items:center">
-        <div class="col">
-          <label for="colorSelect">Pasirinkite spalvą:</label>
-          <select id="colorSelect">
+        <div class="step" id="step3">
+          <label for="color">Pasirinkite spalvą:</label>
+          <select id="color">
             <option value="pilka">Pilka (numatyta)</option>
             <option value="raudona">Raudona</option>
-            <option value="mėlyna">Mėlyna</option>
-            <option value="žalia">Žalia</option>
+            <option value="melyna">Mėlyna</option>
+            <option value="zalia">Žalia</option>
             <option value="juoda">Juoda</option>
             <option value="balta">Balta</option>
-            <option value="artimiausia">Artimiausia objektui</option>
+            <option value="artimiausia">Artimiausia pasirinktam objektui</option>
           </select>
+
+          <label style="margin-top:8px"><input id="engrave" type="checkbox"> Medžio graviravimas (+€4.99)</label>
+
+          <div class="btn-row">
+            <button class="muted" id="backTo2">Atgal</button>
+            <button id="toStep4">Toliau</button>
+          </div>
         </div>
 
-        <div style="width:160px">
-          <label style="display:block;margin-bottom:6px">&nbsp;</label>
-          <label style="display:flex;align-items:center;gap:8px"><input id="engrave" type="checkbox"> Medžio graviravimas (+€4.99/vnt)</label>
+        <div class="step" id="step4">
+          <p>Ką norite pridėti?</p>
+          <div class="btn-row">
+            <button id="addMore">Pridėti daugiau figūrų</button>
+            <button id="addDateBtn">Pridėti datą</button>
+            <button id="finishBtn">Baigti</button>
+          </div>
+          <div class="btn-row">
+            <button class="muted" id="backTo3">Atgal</button>
+          </div>
         </div>
-      </div>
 
-      <div class="controls">
-        <button id="updatePreviewBtn">Atnaujinti peržiūrą</button>
-        <button id="calcPriceBtn" class="muted">Apskaičiuoti kainą</button>
-        <button id="addDateBtn" class="">Pridėti datą</button>
-      </div>
-
-      <div id="dateArea" style="display:none;margin-top:10px">
-        <label for="dateInput">Pasirinkite datą (neprivaloma) — €0.20</label>
-        <input id="dateInput" type="date">
-      </div>
-
-      <div style="margin-top:12px" class="note">
-        Pastaba: GPS modulis šiuo metu neprieinamas. Jei vėliau bus galimybė, bus galima paslėpti GPS modulyje (dėl tam tikrų sudėtingų formų tai gali reikalauti papildomo darbo).
-      </div>
-    </main>
-
-    <aside>
-      <div class="preview" id="preview">
-        <canvas id="previewCanvas" width="560" height="320" aria-label="Preview canvas"></canvas>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
-          <button id="openPreview">Open (new tab)</button>
-          <button id="downloadPreview" class="muted">Download PNG</button>
-          <button id="copyPreview" class="muted">Copy Image</button>
+        <div class="step" id="dateStep">
+          <label for="date">Pasirinkite datą:</label>
+          <input id="date" type="date">
+          <div class="btn-row">
+            <button class="muted" id="dateBack">Atgal</button>
+            <button id="dateFinish">Baigti</button>
+          </div>
         </div>
-        <div style="font-size:0.85rem;color:rgba(0,0,0,0.6)">Preview generated client-side. Use buttons to export or copy.</div>
-      </div>
 
-      <div class="price" id="priceBox">Apskaičiuojama: €0.00</div>
+        <div class="step" id="summaryStep">
+          <h3>Jūsų užsakymo santrauka</h3>
+          <div id="summaryText" style="text-align:left"></div>
+          <div style="margin-top:10px;text-align:left">
+            <label>Pilnas vardas:</label>
+            <input id="fullname" type="text">
+            <label>El. paštas:</label>
+            <input id="email" type="email">
+            <label>Telefonas:</label>
+            <input id="phone" type="tel">
+          </div>
+          <div class="btn-row" style="margin-top:12px">
+            <button id="submitBtn">Pateikti užklausą</button>
+            <button class="muted" id="backFromSummary">Atgal</button>
+          </div>
+        </div>
 
-      <div style="display:flex;gap:8px;justify-content:center">
-        <button id="sendEnquiry" class="muted">Pateikti užklausą (Formspree)</button>
-      </div>
+        <div class="note" id="prototypeNote">Ši svetainė yra tik prototipas ir dar neveikia pilnai.</div>
+      </main>
 
-      <div style="font-size:0.85rem;color:rgba(0,0,0,0.65);text-align:center">
-        Pristatymą aptarsime susisiekus.
-      </div>
-    </aside>
+      <aside>
+        <div class="preview">
+          <canvas id="previewCanvas" width="520" height="320"></canvas>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center">
+            <button id="openPreview">Open</button>
+            <button id="downloadPreview" class="muted">Download</button>
+            <button id="copyPreview" class="muted">Copy</button>
+          </div>
+          <div style="font-size:.9rem;color:rgba(0,0,0,0.65)" id="previewHint">Peržiūra atnaujinama automatiškai.</div>
+        </div>
 
-    <footer>All rights reserved Pasaulinukai 2025 — Svetainė: Airidas Naudzius</footer>
+        <div class="price" id="priceBox">Apskaičiuojama kaina: €0.00</div>
+
+        <div style="display:flex;gap:8px;justify-content:center">
+          <button id="sendFormBtn" class="muted">Siųsti užklausą (Formspree)</button>
+        </div>
+
+        <div style="font-size:.9rem;color:rgba(0,0,0,0.65);text-align:center">Pristatymas derinamas po užsakymo.</div>
+      </aside>
+    </div>
+
+    <footer>All rights reserved Pasaulinukai 2025 — Airidas Naudzius</footer>
   </div>
 
-  <!-- Hidden form to send data (includes estimated price & preview markdown) -->
-  <form id="orderForm" action="https://formspree.io/f/mgvnyvbv" method="POST" style="display:none">
-    <input name="object" id="form_object">
-    <input name="quantity" id="form_quantity">
-    <input name="material" id="form_material">
-    <input name="text" id="form_text">
-    <input name="color" id="form_color">
-    <input name="date" id="form_date">
-    <input name="engrave" id="form_engrave">
-    <input name="estimated_price_per_unit" id="form_price_unit">
-    <input name="estimated_price_total" id="form_price_total">
-    <input name="preview_data_url" id="form_preview_data">
-    <input name="fullname" id="form_fullname">
-    <input name="email" id="form_email">
-    <input name="phone" id="form_phone">
-    <input type="hidden" name="_subject" value="Naujas Pasaulinukai užklausimas">
+  <!-- hidden form fields for submission -->
+  <form id="hiddenForm" action="https://formspree.io/f/mgvnyvbv" method="POST" style="display:none">
+    <input name="object" id="f_object">
+    <input name="text" id="f_text">
+    <input name="color" id="f_color">
+    <input name="date" id="f_date">
+    <input name="engrave" id="f_engrave">
+    <input name="price_per_unit" id="f_price_unit">
+    <input name="price_total" id="f_price_total">
+    <input name="preview_data" id="f_preview">
+    <input name="fullname" id="f_fullname">
+    <input name="email" id="f_email">
+    <input name="phone" id="f_phone">
   </form>
 
   <script>
-    // --- Elements ---
+    // --- setup ---
     const glass = document.getElementById('glass');
-    const objectInput = document.getElementById('objectInput');
-    const quantitySelect = document.getElementById('quantity');
-    const materialSelect = document.getElementById('material');
-    const textInput = document.getElementById('customText');
-    const colorSelect = document.getElementById('colorSelect');
-    const engraveCheckbox = document.getElementById('engrave');
+    const steps = ['step1','step2','step3','step4','dateStep','summaryStep'];
+    function show(id){ steps.forEach(s=>document.getElementById(s).style.display='none'); document.getElementById(id).style.display='block'; }
+    
+    // initial
+    window.addEventListener('load', ()=>{ glass.classList.add('loaded'); show('step1'); });
+
+    // elements
+    const objectInput = document.getElementById('object');
+    const toStep2 = document.getElementById('toStep2');
+    const backTo1 = document.getElementById('backTo1');
+    const toStep3 = document.getElementById('toStep3');
+    const skipText = document.getElementById('skipText');
+    const backTo2 = document.getElementById('backTo2');
+    const toStep4 = document.getElementById('toStep4');
+    const backTo3 = document.getElementById('backTo3');
+    const addMore = document.getElementById('addMore');
     const addDateBtn = document.getElementById('addDateBtn');
-    const dateArea = document.getElementById('dateArea');
-    const dateInput = document.getElementById('dateInput');
-
-    const updatePreviewBtn = document.getElementById('updatePreviewBtn');
-    const calcPriceBtn = document.getElementById('calcPriceBtn');
+    const dateBack = document.getElementById('dateBack');
+    const dateFinish = document.getElementById('dateFinish');
+    const finishBtn = document.getElementById('finishBtn');
+    const customText = document.getElementById('customText');
+    const color = document.getElementById('color');
+    const engrave = document.getElementById('engrave');
+    const dateInput = document.getElementById('date');
     const priceBox = document.getElementById('priceBox');
-
     const previewCanvas = document.getElementById('previewCanvas');
-    const openPreviewBtn = document.getElementById('openPreview');
-    const downloadPreviewBtn = document.getElementById('downloadPreview');
-    const copyPreviewBtn = document.getElementById('copyPreview');
-    const sendEnquiryBtn = document.getElementById('sendEnquiry');
-
-    const form = document.getElementById('orderForm');
-
-    // --- Pricing constants ---
-    const BASE_PRICE_SIMPLE = 9.99;     // per unit
-    const BASE_PRICE_HARD = 14.99;      // per unit for hard models
-    const TEXT_FEE = 0.20;              // per unit if any text
-    const DATE_FEE = 0.20;              // per unit if date selected
-    const ENGRAVE_FEE = 4.99;           // per unit if engraving selected
-
-    // Hard model keywords (Lithuanian + common)
-    const HARD_KEYWORDS = [
-      'eifel', 'eifelio', 'eiffel',           // Eiffel
-      'burj', 'burj khalifa', 'burj-khalifa', // Burj Khalifa
-      'statula', 'laisvės statula',           // Statue (e.g., statue of liberty)
-      'piramid', 'piramidė', 'pyram',         // Pyramid
-      'big ben', 'colosseum', 'sagrada'       // other famous complex forms
-    ];
-
-    // --- Utility helpers ---
-    function isHardModel(name){
-      if(!name) return false;
-      const t = name.toLowerCase();
-      return HARD_KEYWORDS.some(k => t.includes(k));
-    }
-
-    function toEuros(n){
-      return '€' + Number(n).toFixed(2);
-    }
-
-    // --- Price calculation ---
-    function calculatePriceBreakdown(){
-      const name = objectInput.value.trim();
-      const qty = Math.max(1, parseInt(quantitySelect.value||'1',10));
-      const hasText = textInput.value.trim().length > 0;
-      const hasDate = !!dateInput.value;
-      const engrave = engraveCheckbox.checked;
-
-      const hard = isHardModel(name);
-      const basePerUnit = hard ? BASE_PRICE_HARD : BASE_PRICE_SIMPLE;
-
-      let perUnit = basePerUnit;
-      if(hasText) perUnit += TEXT_FEE;
-      if(hasDate) perUnit += DATE_FEE;
-      if(engrave) perUnit += ENGRAVE_FEE;
-
-      const total = perUnit * qty;
-
-      return {
-        name, qty, material: materialSelect.value, perUnit: Number(perUnit.toFixed(2)), total: Number(total.toFixed(2)), breakdown:{
-          basePerUnit, textFee: hasText ? TEXT_FEE : 0, dateFee: hasDate ? DATE_FEE : 0, engraveFee: engrave ? ENGRAVE_FEE : 0
-        }, hard
-      };
-    }
-
-    function updatePriceUI(){
-      const p = calculatePriceBreakdown();
-      priceBox.textContent = `Kaina: ${toEuros(p.perUnit)} / vnt — Iš viso ${toEuros(p.total)}`;
-    }
-
-    // --- Preview generation (canvas) ---
     const ctx = previewCanvas.getContext('2d');
+    const openPreview = document.getElementById('openPreview');
+    const downloadPreview = document.getElementById('downloadPreview');
+    const copyPreview = document.getElementById('copyPreview');
+    const sendFormBtn = document.getElementById('sendFormBtn');
+    const summaryText = document.getElementById('summaryText');
 
-    function drawPreview(){
-      // Clear
-      const w = previewCanvas.width;
-      const h = previewCanvas.height;
-      ctx.clearRect(0,0,w,h);
+    // pricing constants
+    const BASE_SIMPLE = 9.99;
+    const BASE_HARD = 14.99;
+    const TEXT_FEE = 0.20;
+    const DATE_FEE = 0.20;
+    const ENGRAVE_FEE = 4.99;
 
-      // Background soft
-      ctx.fillStyle = '#f7fbff';
-      ctx.fillRect(0,0,w,h);
+    const HARD_KEYS = ['eifel','eifelio','eiffel','burj','burj khalifa','piramid','statula','laisv'];
 
-      // Determine icon by object
-      const name = objectInput.value.trim().toLowerCase();
-      const hard = isHardModel(name);
-      // Draw a stylized silhouette for preview (simple shapes)
-      ctx.save();
-      ctx.translate(w/2, h/2 - 10);
+    function isHard(name){ if(!name) return false; const t=name.toLowerCase(); return HARD_KEYS.some(k=>t.includes(k)); }
 
-      // color for preview accent
-      let color = '#999';
-      const c = colorSelect.value;
-      if(c === 'pilka') color = '#9aa0a6';
-      if(c === 'raudona') color = '#c33';
-      if(c === 'mėlyna' || c === 'melyna') color = '#1e88ff';
-      if(c === 'žalia' || c === 'zalia') color = '#2e7d32';
-      if(c === 'juoda') color = '#222';
-      if(c === 'balta') color = '#eee';
-      if(c === 'artimiausia') color = hard ? '#999' : '#1e88ff';
+    function calculate(){ const name=objectInput.value.trim(); const qty=1; // original: single unit per step
+      const hard=isHard(name); const base= hard?BASE_HARD:BASE_SIMPLE; const hasText= !!customText.value.trim(); const hasDate= !!dateInput.value; const engr= engrave.checked; let per=base; if(hasText) per+=TEXT_FEE; if(hasDate) per+=DATE_FEE; if(engr) per+=ENGRAVE_FEE; const total= per * qty; return {name,qty,per: Number(per.toFixed(2)), total: Number(total.toFixed(2)), breakdown:{base,hasText,hasDate,engr}} }
 
-      // simple silhouettes
-      if(hard && name.includes('eifel')){
-        // Eiffel-like: triangular lattice
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(-40,60);
-        ctx.lineTo(0,-80);
-        ctx.lineTo(40,60);
-        ctx.closePath();
-        ctx.fill();
-        // crossbars
-        ctx.strokeStyle = '#fff';
-        ctx.lineWidth = 2;
-        for(let y=30;y>-40;y-=15){
-          ctx.beginPath();
-          ctx.moveTo(-30, y);
-          ctx.lineTo(30, y+8);
-          ctx.stroke();
-        }
-      } else if(hard && name.includes('burj')){
-        // Burj Khalifa like: tall spire
-        ctx.fillStyle = color;
-        ctx.fillRect(-25,-110,50,180);
-        ctx.fillStyle = '#fff';
-        ctx.fillRect(-12,-60,24,120);
-      } else if(hard && name.includes('piramid')){
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.moveTo(0,-60);
-        ctx.lineTo(80,60);
-        ctx.lineTo(-80,60);
-        ctx.closePath();
-        ctx.fill();
-      } else if(hard && (name.includes('statula') || name.includes('laisv'))){
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(0,-20,36,0,Math.PI*2);
-        ctx.fill();
-        ctx.fillRect(-20,20,40,60);
+    function updatePrice(){ const p=calculate(); priceBox.textContent = `Apskaičiuojama kaina: €${p.total.toFixed(2)}` }
+
+    // preview draw
+    function draw(){ const w=previewCanvas.width, h=previewCanvas.height; ctx.clearRect(0,0,w,h); // bg
+      const grad = ctx.createLinearGradient(0,0,w,h); grad.addColorStop(0,'#fff'); grad.addColorStop(1,'#f0f8ff'); ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
+      const name = objectInput.value.trim(); const hardModel = isHard(name);
+      ctx.save(); ctx.translate(w/2,h/2 -10);
+      // color mapping
+      let col = '#9aa0a6';
+      const c = (color.value||'pilka').toLowerCase(); if(c.includes('raud')) col='#c33'; if(c.includes('mely')||c.includes('mėly')) col='#1e88ff'; if(c.includes('žali')||c.includes('zalia')) col='#2e7d32'; if(c.includes('juod')) col='#222'; if(c.includes('balt')) col='#eee';
+      if(hardModel && name.toLowerCase().includes('eifel')){
+        // simple triangle tower
+        ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(-40,60); ctx.lineTo(0,-80); ctx.lineTo(40,60); ctx.closePath(); ctx.fill(); ctx.strokeStyle='rgba(255,255,255,0.6)'; ctx.lineWidth=2; for(let y=30;y>-40;y-=15){ ctx.beginPath(); ctx.moveTo(-30,y); ctx.lineTo(30,y+8); ctx.stroke(); }
+      } else if(hardModel && name.toLowerCase().includes('burj')){
+        ctx.fillStyle=col; ctx.fillRect(-18,-110,36,180); ctx.fillStyle='#fff'; ctx.fillRect(-8,-40,16,80);
+      } else if(hardModel && name.toLowerCase().includes('piramid')){
+        ctx.fillStyle=col; ctx.beginPath(); ctx.moveTo(0,-60); ctx.lineTo(80,60); ctx.lineTo(-80,60); ctx.closePath(); ctx.fill();
       } else {
-        // simple generic keychain shape (rounded rectangle + hole)
-        ctx.fillStyle = color;
-        roundRect(ctx,-60,-40,120,80,14,true,false);
-        ctx.fillStyle = '#fff';
-        ctx.beginPath();
-        ctx.arc(40,-30,8,0,Math.PI*2);
-        ctx.fill();
+        // generic keychain shape
+        ctx.fillStyle=col; roundRect(ctx,-72,-36,144,72,14,true,false); ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(48,-28,8,0,Math.PI*2); ctx.fill();
       }
-
-      // Draw text if present
-      const text = textInput.value.trim();
-      if(text){
-        ctx.fillStyle = '#111';
-        ctx.font = 'bold 22px system-ui, Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(text, 0, 80);
-      }
-
-      // subtle label with object name
-      ctx.fillStyle = 'rgba(0,0,0,0.55)';
-      ctx.font = '12px system-ui, Arial';
-      ctx.textAlign = 'center';
-      const displayName = objectInput.value.trim() || 'Objektas';
-      ctx.fillText(displayName, 0, 98);
-
-      ctx.restore();
-
-      // draw shadow
-      ctx.globalCompositeOperation = 'destination-over';
-      ctx.fillStyle = 'rgba(0,0,0,0.06)';
-      ctx.beginPath();
-      ctx.ellipse(w/2, h - 20, 80, 10, 0, 0, Math.PI*2);
-      ctx.fill();
-      ctx.globalCompositeOperation = 'source-over';
+      // text
+      if(customText.value.trim()){ ctx.fillStyle='#111'; ctx.font='bold 20px system-ui,Arial'; ctx.textAlign='center'; ctx.fillText(customText.value.trim(), 0, 88); }
+      ctx.restore(); // shadow
+      ctx.globalCompositeOperation='destination-over'; ctx.fillStyle='rgba(0,0,0,0.06)'; ctx.beginPath(); ctx.ellipse(w/2,h-18,80,10,0,0,2*Math.PI); ctx.fill(); ctx.globalCompositeOperation='source-over';
     }
 
-    // helper: draw rounded rect
-    function roundRect(ctx,x,y,w,h,r,fill,stroke){
-      if(typeof r === 'undefined') r=5;
-      ctx.beginPath();
-      ctx.moveTo(x+r,y);
-      ctx.arcTo(x+w,y,x+w,y+h,r);
-      ctx.arcTo(x+w,y+h,x,y+h,r);
-      ctx.arcTo(x,y+h,x,y,r);
-      ctx.arcTo(x,y,x+w,y,r);
-      ctx.closePath();
-      if(fill) ctx.fill();
-      if(stroke) ctx.stroke();
-    }
+    function roundRect(ctx,x,y,w,h,r,fill,stroke){ if(typeof r==='undefined') r=5; ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); if(fill) ctx.fill(); if(stroke) ctx.stroke(); }
 
-    // --- Export / copy preview ---
-    function openPreviewInNewTab(){
-      const data = previewCanvas.toDataURL('image/png');
-      const w = window.open('');
-      if(!w) return alert('Popup blocked — allow popups to open preview.');
-      const img = w.document.createElement('img');
-      img.src = data;
-      img.style.maxWidth = '100%';
-      w.document.body.style.margin = '0';
-      w.document.body.appendChild(img);
-    }
-    function downloadPreviewImage(){
-      const a = document.createElement('a');
-      a.href = previewCanvas.toDataURL('image/png');
-      a.download = 'pasaulinukai_preview.png';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }
-    async function copyPreviewToClipboard(){
-      try{
-        const blob = await (await fetch(previewCanvas.toDataURL())).blob();
-        const item = new ClipboardItem({'image/png': blob});
-        await navigator.clipboard.write([item]);
-        alert('Peržiūra nukopijuota į iškarpinę.');
-      }catch(e){
-        alert('Kopijavimas nepavyko — naršyklė gali nepalaikyti.'); 
-      }
-    }
-
-    // --- Form submission (creates hidden form data then opens Formspree) ---
-    function sendEnquiry(){
-      // populate hidden form fields
-      const data = calculatePriceBreakdown();
-      document.getElementById('form_object').value = data.name;
-      document.getElementById('form_quantity').value = data.qty;
-      document.getElementById('form_material').value = data.material;
-      document.getElementById('form_text').value = textInput.value.trim();
-      document.getElementById('form_color').value = colorSelect.value;
-      document.getElementById('form_date').value = dateInput.value || '';
-      document.getElementById('form_engrave').value = engraveCheckbox.checked ? 'yes' : 'no';
-      document.getElementById('form_price_unit').value = data.perUnit.toFixed(2);
-      document.getElementById('form_price_total').value = data.total.toFixed(2);
-      document.getElementById('form_preview_data').value = previewCanvas.toDataURL();
-
-      // For demo: open a confirm to proceed (in real flow you'd show contact fields)
-      if(!confirm(`Siųsti užklausą el. paštu? Apytikslė suma ${toEuros(data.total)}`)) return;
-
-      // Submit form (this will open network request)
-      form.submit();
-
-      // show quick message
-      alert('Užklausa išsiųsta. Mes susisieksime dėl pristatymo.');
-    }
-
-    // --- Events wiring ---
-    updatePreviewBtn.addEventListener('click', ()=>{ drawPreview(); updatePriceUI(); });
-    calcPriceBtn.addEventListener('click', updatePriceUI);
-    addDateBtn.addEventListener('click', ()=>{
-      dateArea.style.display = dateArea.style.display === 'none' ? 'block' : 'none';
+    // wire buttons
+    toStep2.addEventListener('click', ()=>{ if(!objectInput.value.trim()){ alert('Prašome įvesti figūrą'); return;} show('step2'); draw(); updatePrice(); });
+    backTo1.addEventListener('click', ()=>show('step1'));
+    toStep3.addEventListener('click', ()=>{ show('step3'); draw(); updatePrice(); });
+    skipText.addEventListener('click', ()=>{ customText.value=''; show('step3'); draw(); updatePrice(); });
+    backTo2.addEventListener('click', ()=>show('step2'));
+    toStep4.addEventListener('click', ()=>{ show('step4'); draw(); updatePrice(); });
+    backTo3.addEventListener('click', ()=>show('step3'));
+    addMore.addEventListener('click', ()=>{ // return to step1 to add another item
+      // in original flow, user can add more — we reset form but keep preview
+      objectInput.value=''; customText.value=''; color.value='pilka'; engrave.checked=false; date.value=''; show('step1'); draw(); updatePrice();
+    });
+    addDateBtn.addEventListener('click', ()=>{ show('dateStep'); });
+    dateBack.addEventListener('click', ()=>show('step4'));
+    dateFinish.addEventListener('click', ()=>{ show('step4'); draw(); updatePrice(); });
+    finishBtn.addEventListener('click', ()=>{ // go to summary
+      // fill summary
+      const p = calculate(); const lines = [];
+      lines.push('<strong>Objektas:</strong> '+escapeHtml(p.name));
+      lines.push('<strong>Tekstas:</strong> '+(customText.value.trim()||'—'));
+      lines.push('<strong>Spalva:</strong> '+escapeHtml(color.value));
+      lines.push('<strong>Data:</strong> '+(date.value||'—'));
+      lines.push('<strong>Medžio graviravimas:</strong> '+(engrave.checked? 'Taip':'Ne'));
+      lines.push('<hr><strong>Apytikslė suma:</strong> €'+p.total.toFixed(2));
+      summaryText.innerHTML = lines.join('<br>');
+      show('summaryStep');
     });
 
-    openPreviewBtn.addEventListener('click', openPreviewInNewTab);
-    downloadPreviewBtn.addEventListener('click', downloadPreviewImage);
-    copyPreviewBtn.addEventListener('click', copyPreviewToClipboard);
-    sendEnquiryBtn.addEventListener('click', sendEnquiry);
+    backFromSummary.addEventListener('click', ()=>show('step4'));
 
-    // live updates: redraw preview when inputs change (debounced)
-    let redrawTimer = null;
-    [objectInput, textInput, colorSelect, engraveCheckbox, quantitySelect].forEach(el=>{
-      el.addEventListener('input', ()=>{ clearTimeout(redrawTimer); redrawTimer = setTimeout(()=>{ drawPreview(); updatePriceUI(); }, 180); });
-      el.addEventListener('change', ()=>{ clearTimeout(redrawTimer); redrawTimer = setTimeout(()=>{ drawPreview(); updatePriceUI(); }, 180); });
+    // calculate helper used above
+    function calculate(){ const name = objectInput.value.trim(); const hard = isHard(name); const base = hard?BASE_HARD:BASE_SIMPLE; const hasText = !!customText.value.trim(); const hasDate = !!date.value; const engr = engrave.checked; let per = base; if(hasText) per += TEXT_FEE; if(hasDate) per += DATE_FEE; if(engr) per += ENGRAVE_FEE; return {name:name||'—', per: Number(per.toFixed(2)), total: Number(per.toFixed(2))}; }
+
+    function updatePrice(){ const p = calculate(); priceBox.textContent = 'Apskaičiuojama kaina: €'+p.total.toFixed(2); }
+
+    // preview exports
+    openPreview.addEventListener('click', ()=>{ const url = previewCanvas.toDataURL(); const w = window.open(''); if(!w) return alert('Popup blocked'); w.document.body.style.margin='0'; const img = w.document.createElement('img'); img.src=url; img.style.maxWidth='100%'; w.document.body.appendChild(img); });
+    downloadPreview.addEventListener('click', ()=>{ const a=document.createElement('a'); a.href=previewCanvas.toDataURL(); a.download='preview.png'; document.body.appendChild(a); a.click(); a.remove(); });
+    copyPreview.addEventListener('click', async ()=>{ try{ const dataUrl=previewCanvas.toDataURL(); const res=await fetch(dataUrl); const blob=await res.blob(); await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]); alert('Preview copied to clipboard'); }catch(e){ alert('Copy failed — browser may not support'); } });
+
+    // submission (hidden form)
+    sendFormBtn.addEventListener('click', ()=>{
+      const p = calculate();
+      document.getElementById('f_object').value = p.name;
+      document.getElementById('f_text').value = customText.value.trim();
+      document.getElementById('f_color').value = color.value;
+      document.getElementById('f_date').value = date.value||'';
+      document.getElementById('f_engrave').value = engrave.checked? 'yes':'no';
+      document.getElementById('f_price_unit').value = p.per.toFixed(2);
+      document.getElementById('f_price_total').value = p.total.toFixed(2);
+      document.getElementById('f_preview').value = previewCanvas.toDataURL();
+      // optionally open form in new tab
+      if(!confirm('Siųsti užklausą su apytiksle kaina €'+p.total.toFixed(2)+'?')) return;
+      document.getElementById('hiddenForm').submit();
     });
-    dateInput.addEventListener('change', ()=>{ updatePriceUI(); });
 
-    // initialize
-    window.addEventListener('load', ()=>{
-      glass.classList.add('loaded');
-      // set example default
-      if(!objectInput.value) objectInput.value = 'Eifelio bokštas';
-      drawPreview();
-      updatePriceUI();
+    // autosave preview and price when inputs change
+    [objectInput, customText, color, engrave, date].forEach(el=>{
+      el.addEventListener('input', ()=>{ draw(); updatePrice(); });
+      el.addEventListener('change', ()=>{ draw(); updatePrice(); });
     });
 
-    // --- Overscroll / stretch improvement ---
-    (function(){
-      let startY = 0, pulling = false, anim = null;
-      function setStretch(s){
-        glass.style.transform = `translateY(0) scaleY(${s})`;
-      }
-      function release(){
-        const from = parseFloat(getComputedStyle(glass).transform.split(',')[5]) || 1;
-        // animate back to 1
-        const dur = 420;
-        const t0 = performance.now();
-        if(anim) cancelAnimationFrame(anim);
-        function step(t){
-          const p = Math.min(1,(t - t0)/dur);
-          const eased = 1 - Math.pow(1 - p, 3);
-          const val = from + (1 - from) * eased;
-          setStretch(val);
-          if(p < 1) anim = requestAnimationFrame(step);
-          else anim = null;
-        }
-        anim = requestAnimationFrame(step);
-      }
-      window.addEventListener('touchstart', e=>{
-        if(window.scrollY <= 0){
-          startY = e.touches[0].clientY; pulling = true;
-        }
-      }, {passive:true});
-      window.addEventListener('touchmove', e=>{
-        if(!pulling) return;
-        const d = e.touches[0].clientY - startY;
-        if(d > 0){
-          const s = 1 + Math.min(0.30, Math.log10(1 + d) * 0.08);
-          setStretch(s);
-        }
-      }, {passive:true});
-      window.addEventListener('touchend', ()=>{ if(pulling) release(); pulling = false; });
-      window.addEventListener('wheel', e=>{
-        if(window.scrollY <= 0 && e.deltaY < 0){
-          setStretch(1.06);
-          setTimeout(()=>release(), 140);
-        }
-      }, {passive:true});
-      // mouse drag for desktop
-      let dragging = false;
-      window.addEventListener('mousedown', e=>{
-        if(window.scrollY <= 0 && e.button === 0){ dragging = true; startY = e.clientY; }
-      });
-      window.addEventListener('mousemove', e=>{
-        if(!dragging) return;
-        const d = e.clientY - startY;
-        if(d > 0){
-          const s = 1 + Math.min(0.30, Math.log10(1 + d) * 0.08);
-          setStretch(s);
-        }
-      });
-      window.addEventListener('mouseup', ()=>{ if(dragging) release(); dragging = false; });
-    })();
+    // helpers
+    function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;'); }
+
+    // init
+    window.addEventListener('load', ()=>{ show('step1'); if(!objectInput.value) objectInput.value='Eifelio bokštas'; draw(); updatePrice(); });
+
+    // better overscroll/stretch
+    (function(){ let startY=0,pulling=false,anim=null; function setStretch(s){ glass.style.transform = `translateY(0) scaleY(${s})`; } function release(){ const from = parseFloat(getComputedStyle(glass).transform.split(',')[5])||1; const dur=420; const t0=performance.now(); if(anim) cancelAnimationFrame(anim); function step(t){ const p=Math.min(1,(t-t0)/dur); const eased=1 - Math.pow(1-p,3); const val = from + (1-from)*eased; setStretch(val); if(p<1) anim=requestAnimationFrame(step); else anim=null; } anim=requestAnimationFrame(step);} window.addEventListener('touchstart',e=>{ if(window.scrollY<=0){ startY=e.touches[0].clientY; pulling=true;} },{passive:true}); window.addEventListener('touchmove',e=>{ if(!pulling) return; const d=e.touches[0].clientY-startY; if(d>0){ const s = 1 + Math.min(0.30, Math.log10(1+d)*0.08); setStretch(s);} },{passive:true}); window.addEventListener('touchend',()=>{ if(pulling) release(); pulling=false; }); window.addEventListener('wheel',e=>{ if(window.scrollY<=0 && e.deltaY<0){ setStretch(1.06); setTimeout(()=>release(),140); } },{passive:true}); let dragging=false; window.addEventListener('mousedown',e=>{ if(window.scrollY<=0 && e.button===0){ dragging=true; startY=e.clientY; } }); window.addEventListener('mousemove',e=>{ if(!dragging) return; const d=e.clientY-startY; if(d>0){ const s = 1 + Math.min(0.30, Math.log10(1+d)*0.08); setStretch(s);} }); window.addEventListener('mouseup',()=>{ if(dragging) release(); dragging=false; }); })();
+
   </script>
 </body>
 </html>
